@@ -1,0 +1,2078 @@
+<title>Part Stamp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a librarian's workbench. Four numbered steps stacked down one column; each step unlocks
+   the next. Page thumbnails act like a lightbox of real sheets; a sticky build bar closes the flow. */
+:root{
+  --bg:#E9EDF1;          /* cool rehearsal-room grey */
+  --surface:#FBFCFD;
+  --sunk:#DFE5EB;
+  --ink:#17202B;
+  --muted:#5A6676;
+  --line:#CDD5DE;
+  --accent:#0E6B68;      /* stand-light teal */
+  --accent-ink:#FFFFFF;
+  --accent-soft:#D3ECEA;
+  --pencil:#F2C94C;      /* the name you'd write in pencil */
+  --warn:#A2520B;
+  --warn-soft:#FCEBD7;
+  --ok:#24704A;
+  --ok-soft:#DDF1E5;
+  --paper:#FFFFFF;
+  --shadow:0 1px 2px rgba(23,32,43,.08),0 4px 14px rgba(23,32,43,.06);
+  --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans","Segoe UI",system-ui,-apple-system,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11161C; --surface:#18202A; --sunk:#0D1217; --ink:#E5EAF0; --muted:#97A3B3; --line:#2A3441;
+    --accent:#3DB5AE; --accent-ink:#06211F; --accent-soft:#163634; --pencil:#E8BE3E;
+    --warn:#F0A458; --warn-soft:#3A2614; --ok:#6FCF97; --ok-soft:#163023; --paper:#FFFFFF;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.25);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11161C; --surface:#18202A; --sunk:#0D1217; --ink:#E5EAF0; --muted:#97A3B3; --line:#2A3441;
+  --accent:#3DB5AE; --accent-ink:#06211F; --accent-soft:#163634; --pencil:#E8BE3E;
+  --warn:#F0A458; --warn-soft:#3A2614; --ok:#6FCF97; --ok-soft:#163023; --paper:#FFFFFF;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.25);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:var(--f-body);font-size:15px;line-height:1.5;padding-inline:16px}
+.wrap{max-width:1180px;margin:0 auto;padding-block:28px 24px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(28px,4vw,40px);font-weight:700}
+h2{font-size:20px;font-weight:600;display:flex;align-items:baseline;gap:10px}
+h3{font-size:13px;font-family:var(--f-body);font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.step{font-family:var(--f-mono);font-size:13px;color:var(--accent);font-weight:500}
+p{margin:0}
+.lede{color:var(--muted);max-width:64ch;margin-top:6px}
+header.top{margin-bottom:22px}
+.mark{display:inline-block;background:var(--pencil);color:#17202B;padding:0 .25em;transform:rotate(-1.5deg);border-radius:2px}
+main{display:flex;flex-direction:column;gap:18px}
+section.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+section.panel.locked{background:transparent;border-style:dashed;padding-block:14px}
+section.panel.locked h2{color:var(--muted)}
+section.panel.locked .step{color:var(--muted)}
+.locked-note{color:var(--muted);font-size:14px}
+.panel-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.hint{color:var(--muted);font-size:13.5px;max-width:80ch}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button,.btn{font:inherit;font-size:14px;font-weight:500;border-radius:7px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:7px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;line-height:1.2}
+button:hover,.btn:hover{border-color:var(--muted)}
+button.primary,.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+button.primary:hover,.btn.primary:hover{filter:brightness(1.07)}
+button:disabled{opacity:.5;cursor:not-allowed}
+button.ghost{border-color:transparent;background:transparent;color:var(--muted)}
+button.ghost:hover{color:var(--ink);background:var(--sunk)}
+button.link{border:none;background:none;padding:0;color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input[type=text],select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:6px 8px;min-width:0}
+input[type=text]:focus,select:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* Drop zones */
+.drop{border:1.5px dashed var(--line);border-radius:9px;padding:18px;display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;background:var(--sunk);cursor:pointer;transition:border-color .15s,background .15s}
+.drop:hover,.drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.drop .icon{width:42px;height:52px;flex:none;border:1.5px solid var(--muted);border-radius:3px;position:relative;background:var(--paper)}
+.drop .icon::before{content:"";position:absolute;left:6px;right:6px;top:12px;height:17px;background:repeating-linear-gradient(#9AA5B3 0 1px,transparent 1px 4px)}
+.drop .icon::after{content:"";position:absolute;left:6px;right:6px;top:33px;height:13px;background:repeating-linear-gradient(#9AA5B3 0 1px,transparent 1px 4px)}
+.drop .icon.grid{background:var(--paper) linear-gradient(90deg,transparent 32%,#9AA5B3 32% 34%,transparent 34% 66%,#9AA5B3 66% 68%,transparent 68%)}
+.drop .icon.grid::before{top:8px;left:0;right:0;height:38px;background:repeating-linear-gradient(transparent 0 8px,#9AA5B3 8px 9px)}
+.drop .icon.grid::after{display:none}
+.drop .meta{flex:1;min-width:200px}
+.drop strong{font-weight:600}
+.file-name{font-family:var(--f-mono);font-size:13.5px;word-break:break-all}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.pill.sample{background:var(--pencil);color:#17202B}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+
+/* Step 3: spreadsheet round trip */
+.scan-status{display:flex;align-items:center;flex-wrap:wrap;gap:10px;font-size:14px;font-weight:500;color:var(--accent);background:var(--accent-soft);border-radius:8px;padding:10px 12px;margin:0}
+.start-field{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:500;padding:3px 4px 3px 10px;border:1px solid var(--line);border-radius:7px;background:var(--surface)}
+.start-field input{width:64px;font:inherit;font-family:var(--f-mono);font-size:14px;padding:4px 6px;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--ink)}
+.start-field input:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+.start-field.user{border-color:var(--accent)}
+.scan-status.bad{color:var(--warn);background:var(--warn-soft)}
+.scan-status .txt{flex:1 1 220px;min-width:0}
+.scan-status button{margin-left:auto;padding:5px 12px;flex:none}
+.scan-status button + button{margin-left:0}
+.scan-status progress{flex:0 1 200px;accent-color:var(--accent);height:8px}
+.grid-wrap{overflow:auto;max-height:540px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table.grid{border-collapse:separate;border-spacing:0;font-size:14px}
+.grid th,.grid td{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:0}
+.grid thead th{position:sticky;top:0;z-index:2;background:var(--sunk);text-align:left;padding:7px 10px;min-width:170px;font-size:13px;font-weight:600;white-space:nowrap}
+.grid thead th .dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:7px;vertical-align:-1px}
+.grid thead th .pp{display:block;font-weight:400;font-size:11.5px;color:var(--muted);margin-left:17px}
+.grid .num{position:sticky;left:0;z-index:1;background:var(--sunk);min-width:40px;width:40px;text-align:center;font-family:var(--f-mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.grid thead .num{z-index:3}
+.grid td input{display:block;width:100%;min-width:170px;border:none;border-radius:0;background:transparent;padding:7px 10px;font:inherit;color:var(--ink)}
+.grid td input:focus{outline:2px solid var(--accent);outline-offset:-2px;background:var(--accent-soft);box-shadow:none}
+.grid td.sel{background:var(--accent-soft)!important;box-shadow:inset 0 0 0 1px var(--accent)}
+.grid.has-sel td.sel input:focus{outline:none}
+.grid.dragging, .grid.dragging input{user-select:none;cursor:cell}
+.grid thead th[data-c], .grid td.num{cursor:pointer}
+.grid thead th[data-c]:hover, .grid td.num:hover{color:var(--accent)}
+.grid tbody tr:hover td:not(.num){background:color-mix(in srgb, var(--accent-soft) 35%, transparent)}
+.notice{border-radius:8px;padding:10px 12px;font-size:14px;background:var(--warn-soft);color:var(--warn)}
+
+/* Parts & pages */
+.parts-grid{display:grid;grid-template-columns:minmax(0,330px) minmax(0,1fr);gap:16px;align-items:start}
+.parts-list{display:flex;flex-direction:column;gap:6px;min-width:0}
+.part{display:grid;grid-template-columns:14px minmax(0,1fr) auto;gap:6px 10px;align-items:center;padding:9px 8px 9px 10px;border:1px solid var(--line);border-radius:8px;cursor:pointer;background:var(--surface)}
+.part:hover{border-color:var(--muted)}
+.part.active{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft);background:var(--accent-soft)}
+.part .dot{width:12px;height:12px;border-radius:3px}
+.part .name{font-weight:600;width:100%;padding:3px 6px;border-color:transparent;background:transparent}
+.part .name:hover{border-color:var(--line)}
+.part .del{padding:4px 7px}
+.part .corner{grid-column:2 / 4;width:100%;border-radius:4px;border:1px solid var(--line);background:#fff}
+.part .sub{grid-column:2 / 4;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.part .sub label{font-size:12px;color:var(--muted)}
+.part .sub input{width:110px;font-family:var(--f-mono);font-size:13px;padding:3px 6px}
+.thumbs-wrap{background:var(--sunk);border-radius:8px;padding:12px;max-height:620px;overflow:auto;min-width:0}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:12px}
+.thumb{position:relative;display:flex;flex-direction:column;gap:5px;align-items:stretch;color:var(--ink)}
+.thumb .view{display:block;border:none;background:none;padding:0;cursor:zoom-in;border-radius:2px}
+.thumb .pick{position:absolute;top:6px;right:6px;width:26px;height:26px;padding:0;border-radius:50%;justify-content:center;font-size:15px;font-weight:700;line-height:1;background:var(--paper);color:#17202B;border:1.5px solid #9AA5B3;opacity:0;transition:opacity .12s}
+.thumb:hover .pick,.thumb .pick:focus-visible,.thumb.in-active .pick{opacity:1}
+.thumb .pick[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.thumbs.no-active .pick{display:none}
+.thumb.viewing .sheet{outline-color:var(--pencil)!important;outline-width:3px}
+@media (hover:none){.thumb .pick{opacity:1}}
+.thumb .sheet{position:relative;background:var(--paper);border-radius:2px;box-shadow:var(--shadow);aspect-ratio:var(--ar,0.773);outline:2px solid transparent;outline-offset:2px;overflow:hidden;max-width:100%}
+.thumb .sheet canvas{width:100%;height:100%;display:block}
+.thumb.in-active .sheet{outline-color:var(--accent)}
+.thumb .view:hover .sheet{outline-color:var(--muted)}
+.thumb.in-active .view:hover .sheet{outline-color:var(--accent)}
+.thumb .pg{font-family:var(--f-mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.tag.skip{background:var(--sunk);color:var(--muted);border:1px solid var(--line)}
+.thumb .tags{display:flex;flex-wrap:wrap;gap:3px;min-height:18px}
+.tag{font-size:11px;font-weight:600;padding:1px 6px;border-radius:4px;color:#17202B;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.parts-grid.has-detail{grid-template-columns:minmax(0,250px) minmax(0,0.9fr) minmax(0,1.2fr)}
+.parts-grid.has-detail .thumbs{grid-template-columns:repeat(auto-fill,minmax(92px,1fr))}
+.detail{display:flex;flex-direction:column;gap:10px;min-width:0;border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--surface);max-height:720px}
+.detail-head{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.detail-head strong{font-family:var(--f-mono);font-size:13.5px;font-weight:500;font-variant-numeric:tabular-nums;min-width:96px;text-align:center}
+.detail-head .spacer{flex:1}
+.detail-head #d-prev,.detail-head #d-next{font-size:18px;padding:3px 11px}
+.detail-parts{display:flex;flex-direction:column;gap:6px}
+.detail-parts .lab{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:4px 10px;border-radius:999px;font-size:13px}
+.chip .dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+.chip[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);font-weight:600}
+.chip[aria-pressed="true"]::after{content:"✓";color:var(--accent);font-weight:700}
+.detail-stage{flex:1;min-height:0;overflow:auto;background:var(--sunk);border-radius:6px;padding:12px}
+.detail-stage canvas{display:block;margin:0 auto;background:var(--paper);box-shadow:var(--shadow);max-width:none}
+@media (max-width:1100px){
+  .parts-grid.has-detail{grid-template-columns:minmax(0,300px) minmax(0,1fr)}
+  .detail{position:fixed;top:0;right:0;bottom:0;width:min(560px,100%);max-height:none;z-index:30;border-radius:0;border-width:0 0 0 1px;box-shadow:-12px 0 32px rgba(0,0,0,.22);padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px))}
+}
+.empty{color:var(--muted);text-align:center;padding:24px 10px;font-size:14px}
+
+/* Stamp */
+.stamp-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px);gap:22px;align-items:start}
+.controls{display:flex;flex-direction:column;gap:16px;min-width:0}
+.field{display:flex;flex-direction:column;gap:6px}
+.field>label,.field>.lab{font-size:13px;font-weight:600}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;align-self:flex-start}
+.seg button{border:none;border-radius:0;border-right:1px solid var(--line);padding:6px 12px}
+.seg button:last-child{border-right:none}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.range{display:flex;align-items:center;gap:10px}
+.range input{flex:1;accent-color:var(--accent);min-width:0}
+.range output{font-family:var(--f-mono);font-size:13px;min-width:52px;text-align:right;font-variant-numeric:tabular-nums}
+.swatches{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.swatches button,.custom-color{display:inline-flex;align-items:center;gap:7px;padding:5px 10px 5px 6px;border-radius:999px;font-size:13px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.swatches button::before{content:"";width:18px;height:18px;border-radius:50%;background:var(--sw);box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+.swatches button[aria-checked="true"],.custom-color.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft);font-weight:600}
+.custom-color input{width:22px;height:22px;padding:0;border:none;border-radius:50%;background:none;cursor:pointer}
+.custom-color input::-webkit-color-swatch-wrapper{padding:0}
+.custom-color input::-webkit-color-swatch{border:none;border-radius:50%}
+.checks{display:flex;flex-direction:column;gap:8px}
+.checks label{display:flex;gap:9px;align-items:flex-start;font-size:14px;cursor:pointer}
+.checks input{accent-color:var(--accent);margin-top:3px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.preview{display:flex;flex-direction:column;gap:8px;min-width:0}
+.preview .stage{background:var(--sunk);border-radius:8px;padding:14px;display:flex;justify-content:center;min-height:200px}
+.preview canvas{max-width:100%;background:var(--paper);box-shadow:var(--shadow);display:block}
+.divider{border:none;border-top:1px solid var(--line);margin:4px 0}
+
+/* Build bar */
+.buildbar{position:sticky;bottom:0;z-index:5;padding-bottom:env(safe-area-inset-bottom,0px)}
+.buildbar .inner{max-width:1180px;margin:0 auto 14px;background:var(--ink);color:var(--bg);border-radius:12px;padding:12px 14px 12px 18px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;box-shadow:0 8px 28px rgba(0,0,0,.18)}
+.buildbar .sum{font-size:14px;min-width:0;flex:1 1 260px}
+.buildbar .sum b{font-variant-numeric:tabular-nums}
+.buildbar .msg{font-size:13px;opacity:.8}
+.buildbar button.primary{background:var(--pencil);border-color:var(--pencil);color:#17202B;padding:10px 18px;font-size:15px}
+.spin{width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .8s linear infinite;display:inline-block}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){.spin{animation:none}}
+
+@media (max-width:820px){
+  .parts-grid,.parts-grid.has-detail,.stamp-grid,.steps3{grid-template-columns:minmax(0,1fr)}
+  .thumbs-wrap{max-height:480px}
+  .two{grid-template-columns:1fr}
+}
+@media (max-width:480px){
+  section.panel{padding:14px}
+  .thumbs{grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:10px}
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <h1>Part <span class="mark">Stamp</span></h1>
+    <p class="lede">Give every player their own copy of their part with their name on it. Upload the parts PDF, check the parts it finds, fill in who plays what, and get one PDF ready to print.</p>
+  </header>
+
+  <main>
+    <!-- 1. PDF -->
+    <section class="panel" id="sec-pdf" aria-labelledby="h-pdf">
+      <div class="panel-head">
+        <h2 id="h-pdf"><span class="step">1</span>Upload the parts PDF</h2>
+        <span class="pill sample" id="sample-pill" hidden>Sample score</span>
+      </div>
+      <label class="drop" id="pdf-drop" for="pdf-input">
+        <span class="icon" aria-hidden="true"></span>
+        <span class="meta">
+          <strong id="pdf-title">Drop the PDF you bought here, or click to choose it. Parts in separate files? Choose them all at once.</strong><br>
+          <span class="hint" id="pdf-sub">Part names are found automatically from the top-left corner of each part's first page, including in scanned PDFs. Your files never leave your computer.</span>
+        </span>
+        <span class="btn primary" aria-hidden="true">Choose PDF</span>
+      </label>
+      <input type="file" id="pdf-input" accept="application/pdf,.pdf" class="sr" multiple>
+      <p class="hint" id="sample-line">No PDF handy? <button type="button" class="link" id="try-sample">Try it with a sample score</button>.</p>
+    </section>
+
+    <!-- 2. Parts to pages -->
+    <section class="panel locked" id="sec-parts" aria-labelledby="h-parts">
+      <div class="panel-head">
+        <h2 id="h-parts"><span class="step">2</span>Check the parts</h2>
+        <div class="row unlocked-only" hidden>
+          <label class="start-field" for="parts-start" title="Everything before this page (title page, notes, score) is skipped">Parts start at page <input type="number" id="parts-start" min="1" inputmode="numeric"></label>
+          <button type="button" id="add-part">Add part</button>
+          <button type="button" class="ghost" id="detect">Scan again</button>
+        </div>
+      </div>
+      <p class="locked-note">Opens after you upload the PDF.</p>
+      <div class="unlocked-only" hidden style="display:contents">
+        <p class="scan-status" id="scan-status" role="status" aria-live="polite" hidden></p>
+        <p class="hint" id="parts-hint"></p>
+        <div class="parts-grid" id="parts-grid">
+          <div class="parts-list" id="parts-list"></div>
+          <div class="thumbs-wrap"><div class="thumbs" id="thumbs"></div></div>
+          <aside class="detail" id="detail" hidden aria-label="Large page view">
+            <div class="detail-head">
+              <button type="button" id="d-prev" aria-label="Previous page">‹</button>
+              <strong id="d-title">Page 1</strong>
+              <button type="button" id="d-next" aria-label="Next page">›</button>
+              <span class="spacer"></span>
+              <button type="button" id="d-zoom" aria-pressed="false">Zoom in</button>
+              <button type="button" class="ghost" id="d-close" aria-label="Close large view">✕</button>
+            </div>
+            <div class="detail-parts"><span class="lab">This page is in</span><div class="chips" id="d-chips"></div></div>
+            <div class="detail-stage" id="d-stage"><canvas id="d-canvas" width="10" height="10"></canvas></div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Names -->
+    <section class="panel locked" id="sec-names" aria-labelledby="h-names">
+      <div class="panel-head">
+        <h2 id="h-names"><span class="step">3</span>Add performer names</h2>
+      </div>
+      <p class="locked-note">Opens once at least one part has pages.</p>
+      <div class="unlocked-only" hidden style="display:contents">
+        <p class="hint">Type each performer's name under their part, one per row. Or copy cells from Excel, Numbers or Google Sheets and paste them into any cell (Ctrl+V or ⌘V). Drag across cells, or shift-click, to select several at once, then press Delete to clear them. Ctrl+Z / ⌘Z undoes. A pasted block whose first row is the part names goes into the matching columns. A two-column list of names and parts also works.</p>
+        <div class="grid-wrap"><table class="grid" id="grid" aria-label="Performer names by part"></table></div>
+        <div class="row grid-tools">
+          <button type="button" id="grid-undo" disabled title="Undo (Ctrl+Z / ⌘Z)">Undo</button>
+          <button type="button" id="grid-redo" disabled title="Redo (Ctrl+Shift+Z / ⌘⇧Z)">Redo</button>
+          <button type="button" id="grid-add">Add row</button>
+          <button type="button" class="ghost" id="grid-clear">Clear names</button>
+          <span class="hint" id="grid-selinfo" aria-live="polite" style="color:var(--accent)"></span>
+          <span class="hint" id="grid-sum" aria-live="polite"></span>
+          <span class="spacer" style="flex:1"></span>
+          <span class="hint" id="sample-names-line" hidden>Sample score? <button type="button" class="link" id="sample-names">Fill in made-up names</button></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Stamp -->
+    <section class="panel locked" id="sec-stamp" aria-labelledby="h-stamp">
+      <div class="panel-head">
+        <h2 id="h-stamp"><span class="step">4</span>Name placement</h2>
+      </div>
+      <p class="locked-note">Opens after you upload the names spreadsheet.</p>
+      <div class="unlocked-only stamp-grid" hidden>
+        <div class="controls">
+          <div class="field">
+            <span class="lab" id="lab-pos">Position along the top</span>
+            <div class="seg" role="group" aria-labelledby="lab-pos" id="pos-seg">
+              <button type="button" data-v="left">Left</button>
+              <button type="button" data-v="center">Center</button>
+              <button type="button" data-v="right">Right</button>
+            </div>
+          </div>
+          <div class="two">
+            <div class="field">
+              <label for="size">Text size</label>
+              <div class="range"><input type="range" id="size" min="8" max="30" step="1"><output id="size-out"></output></div>
+            </div>
+            <div class="field">
+              <label for="offset">Distance from top edge</label>
+              <div class="range"><input type="range" id="offset" min="6" max="90" step="1"><output id="offset-out"></output></div>
+            </div>
+            <div class="field">
+              <label for="side">Distance from side edge</label>
+              <div class="range"><input type="range" id="side" min="12" max="120" step="1"><output id="side-out"></output></div>
+            </div>
+            <div class="field">
+              <label for="font">Lettering</label>
+              <select id="font">
+                <option value="sans">Sans serif, bold</option>
+                <option value="serif">Serif, bold</option>
+                <option value="serif-italic">Serif, bold italic</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <span class="lab" id="lab-color">Name color</span>
+            <div class="swatches" role="radiogroup" aria-labelledby="lab-color" id="color-swatches">
+              <button type="button" role="radio" data-color="#000000" style="--sw:#000000"><span>Black</span></button>
+              <button type="button" role="radio" data-color="#1F3A93" style="--sw:#1F3A93"><span>Navy</span></button>
+              <button type="button" role="radio" data-color="#B3122E" style="--sw:#B3122E"><span>Red</span></button>
+              <button type="button" role="radio" data-color="#1E6B3A" style="--sw:#1E6B3A"><span>Green</span></button>
+              <button type="button" role="radio" data-color="#6A2C91" style="--sw:#6A2C91"><span>Purple</span></button>
+              <button type="button" role="radio" data-color="#8A5A00" style="--sw:#8A5A00"><span>Brown</span></button>
+              <label class="custom-color" title="Pick any color"><input type="color" id="color-custom" aria-label="Custom name color"><span>Custom</span></label>
+            </div>
+          </div>
+          <div class="checks">
+            <label><input type="checkbox" id="box"> <span>White backing behind the name, so it stays readable over printed music</span></label>
+            <label><input type="checkbox" id="every"> <span>Put the name on every page of the part, not just the first</span></label>
+          </div>
+          <hr class="divider">
+          <h3>Output</h3>
+          <div class="field">
+            <label for="order">Order of copies</label>
+            <select id="order">
+              <option value="sheet">By part, in the order of the names grid</option>
+              <option value="score">By part, in page order of the PDF</option>
+              <option value="alpha">Alphabetical by performer</option>
+            </select>
+          </div>
+          <div class="checks">
+            <label><input type="checkbox" id="duplex"> <span>Add a blank page after parts with an odd page count, so each copy starts on a fresh sheet when printing double-sided</span></label>
+          </div>
+        </div>
+        <div class="preview">
+          <div class="row" style="justify-content:space-between">
+            <h3>Preview</h3>
+            <label class="sr" for="preview-who">Preview performer</label>
+            <select id="preview-who"></select>
+          </div>
+          <div class="stage"><canvas id="preview-canvas" width="10" height="10" aria-label="Preview of the first page with the performer's name"></canvas></div>
+          <p class="hint" id="preview-note"></p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="buildbar">
+  <div class="inner">
+    <div class="sum">
+      <div id="summary">Start by uploading the parts PDF.</div>
+      <div class="msg" id="bar-msg" role="status" aria-live="polite"></div>
+    </div>
+    <button type="button" class="primary" id="build" disabled>Build printable PDF</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script>
+"use strict";
+/* ---------- state ---------- */
+const S = {
+  pdfBytes: null, pdfName: "", jsDoc: null, libDoc: null, numPages: 0,
+  pageAR: [], lines: [], fullText: [], hasText: false,
+  parts: [],          // {id, label, pages:[0-based]}
+  active: null, lastClick: null, isSample: false,
+  cols: [],           // from the names spreadsheet: {header, names:[], partId|null}
+  sheetName: "",
+  settings: { pos: "right", size: 14, offset: 22, side: 36, font: "sans", color: "#000000", box: true, every: false, order: "sheet", duplex: false },
+  loadId: 0, nextId: 1, scanId: 0, ocrWorker: null,
+};
+const PART_COLORS = ["#F2C94C","#8FD3C9","#F4A6A0","#A9C5F5","#C9B6F2","#B8E0A0","#F6C38E","#E7A9D6","#9FD8F0","#D9D27E"];
+const $ = (id) => document.getElementById(id);
+try { const s = JSON.parse(localStorage.getItem("partstamp.settings") || "null"); if (s) Object.assign(S.settings, s); } catch (e) {}
+if (!["sheet", "score", "alpha"].includes(S.settings.order)) S.settings.order = "sheet";
+function saveSettings(){ try { localStorage.setItem("partstamp.settings", JSON.stringify(S.settings)); } catch (e) {} }
+// Character maps and standard fonts let the PDF reader decode text in PDFs that use less common font encodings.
+// The offline file carries its own PDF reader (window.__libsReady) and needs no downloads.
+const PDFJS_OPTS = window.__libsReady ? {} : { cMapUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/", cMapPacked: true, standardFontDataUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/standard_fonts/" };
+if (window.pdfjsLib && !window.__libsReady) pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+/* ---------- text helpers ---------- */
+const ALIASES = { fl:"flute", flt:"flute", picc:"piccolo", ob:"oboe", bsn:"bassoon", cl:"clarinet", clar:"clarinet", clt:"clarinet",
+  sax:"saxophone", bari:"baritone", tpt:"trumpet", trp:"trumpet", hn:"horn", hrn:"horn", tbn:"trombone", trb:"trombone", tbne:"trombone",
+  euph:"euphonium", cym:"cymbal", cyms:"cymbal", tri:"triangle", tamb:"tambourine", sus:"suspended", susp:"suspended", wb:"woodblock", sd:"snare drum", bd:"bass drum", perc:"percussion", aux:"auxiliary", sx:"saxophone", asx:"saxophone", tsx:"saxophone", bsx:"saxophone", mlt:"mallet", mlts:"mallet", bcl:"clarinet", bscl:"clarinet", tba:"tuba", perc:"percussion", timp:"timpani", vln:"violin", vn:"violin", vla:"viola", vc:"cello", vlc:"cello",
+  violoncello:"cello", cb:"contrabass", db:"bass", kbd:"keyboard", pno:"piano", glock:"glockenspiel", xylo:"xylophone", vibes:"vibraphone",
+  i:"1", ii:"2", iii:"3", iv:"4", "1st":"1", ist:"1", lst:"1", "2nd":"2", znd:"2", "3rd":"3", ard:"3", "4th":"4", first:"1", second:"2", third:"3", fourth:"4" };
+function normWords(s){
+  let t = String(s || "").toLowerCase().replace(/♭/g, "b").replace(/♯/g, "#");
+  t = t.replace(/\b(?:in\s+)?([tb])\.\s*c\.?(?=\s|$|[^a-z])/g, " $1c ");                // "in T.C." / "B.C." clef versions
+  t = t.replace(/\bin\s+(b|e|f|a|c|d|g)\s*(b|flat|#|sharp)?\b/g, " ");   // "in Bb", "in F"
+  t = t.replace(/\b(b|e)\s*(b|flat)\s+(?=[a-z])/g, " ");                     // "Bb Clarinet"
+  t = t.replace(/\bt\.?\s*c\.?(?=\s|$)/g, " tc ").replace(/\bb\.\s*c\.?(?=\s|$)/g, " bc ");     // treble / bass clef versions
+  t = t.replace(/([a-z])(\d)/g, "$1 $2").replace(/[^a-z0-9#]+/g, " ").trim();
+  // aliases, then drop stray single letters left over from keys ("E♭ Alto Sax" read as "E> ALTO SAX")
+  return t.split(/\s+/).filter(Boolean).map(x => ALIASES[x] || x).join(" ").split(" ").filter(x => x && !/^[a-z]$/.test(x));
+}
+function norm(s){
+  const w = normWords(s);
+  if (w.length > 1 && /^\d+$/.test(w[0])) w.push(w.shift());   // "2nd Trombone" -> "trombone 2"
+  return w.join(" ");
+}
+const INSTR = "flute|piccolo|oboe|clarinet|bassoon|contrabassoon|saxophone|horn|trumpet|cornet|flugelhorn|trombone|euphonium|baritone|tuba|sousaphone|percussion|timpani|drum|drumset|mallet|bell|glockenspiel|xylophone|marimba|vibraphone|chime|cymbal|triangle|tambourine|gong|tam|tom|toms|bongo|conga|woodblock|block|clave|claves|maraca|shaker|cabasa|guiro|castanet|castanets|whip|slapstick|ratchet|anvil|crotale|crotales|cowbell|timbale|timbales|cajon|vibes|glock|kit|piano|keyboard|organ|harp|guitar|bass|violin|viola|cello|contrabass|soprano|alto|tenor|voice|vocal|choir|score|conductor|recorder|ukulele|synthesizer|celesta|harmonica|accordion";
+const QUAL = "alto|tenor|baritone|bass|contrabass|contra|soprano|sopranino|piccolo|english|french|string|electric|acoustic|snare|auxiliary|aux|solo|full|condensed|mallet|suspended|crash|concert|hand|temple|wind|sleigh|tubular|orchestra|field|ride|splash|finger|bell|drum";
+const PHRASE = new RegExp(`(?:^| )((?:\\d+ )?(?:(?:${QUAL}) )*(?:${INSTR})s?(?: \\d{1,2})?(?: tc| bc)?)(?= |$)`, "g");
+function phrasesIn(text){
+  const n = normWords(text).join(" "); const out = []; let m;
+  PHRASE.lastIndex = 0;
+  while ((m = PHRASE.exec(n))) { out.push(norm(m[1])); PHRASE.lastIndex = m.index + m[0].length; }
+  return out;
+}
+// Tidy a part name as printed or as read from an image: "Ist Bb CLARINET" -> "1st B♭ Clarinet".
+function prettyLabel(t){
+  t = String(t).trim().replace(/\b[Il]st\b/g, "1st").replace(/\bznd\b/gi, "2nd").replace(/\b([BE])b\b/g, "$1♭").replace(/\b([BE])>\s*/g, "$1♭ ");
+  // a lone B or E in front of an instrument is the key, whose flat sign got lost in reading
+  t = t.replace(/\b([BE])\s+(?=(alto|tenor|baritone|soprano|bass|clarinet|trumpet|cornet|saxophone)\b)/gi, "$1♭ ");
+  t = t.replace(/[,;:\-–]+$/, "").trim();
+  t = t.replace(/\b([BE])7(?=\s+[A-Za-z])/g, "$1♭");                               // "E7 Alto" -> "E♭ Alto"
+  t = t.replace(/\b([A-Z])([A-Z]{2,})\b/g, (m, a, b) => a + b.toLowerCase());   // CLARINET -> Clarinet
+  t = t.replace(/\b([A-Za-z])([a-z]*[A-Z][A-Za-z]*)\b/g, (m, a, b) => /^[A-Z]{1,2}$/.test(m) || /^[A-Z]\.?[A-Z]\.?$/.test(m) ? m : a.toUpperCase() + b.toLowerCase());   // "AltO" -> "Alto"
+  return t.replace(/\s+/g, " ");
+}
+function titleCase(s){ return s.replace(/\b[a-z]/g, c => c.toUpperCase()); }
+function parseRanges(str, max){
+  const out = new Set();
+  for (const chunk of String(str).split(/[,;\s]+/)) {
+    if (!chunk) continue;
+    const m = chunk.match(/^(\d+)(?:-(\d+))?$/); if (!m) continue;
+    let a = +m[1], b = m[2] ? +m[2] : a; if (a > b) [a, b] = [b, a];
+    for (let i = a; i <= b; i++) if (i >= 1 && i <= max) out.add(i - 1);
+  }
+  return [...out].sort((x, y) => x - y);
+}
+function fmtRanges(arr){
+  const a = [...arr].sort((x, y) => x - y); const parts = []; let i = 0;
+  while (i < a.length) { let j = i; while (j + 1 < a.length && a[j + 1] === a[j] + 1) j++; parts.push(j > i ? `${a[i] + 1}-${a[j] + 1}` : `${a[i] + 1}`); i = j + 1; }
+  return parts.join(", ");
+}
+function debounce(fn, ms){ let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
+function plural(n, w, p){ return `${n} ${n === 1 ? w : (p || w + "s")}`; }
+function msg(t){ $("bar-msg").textContent = t || ""; }
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+const partById = (id) => S.parts.find(p => p.id === id);
+const colorOf = (id) => PART_COLORS[Math.max(0, S.parts.findIndex(p => p.id === id)) % PART_COLORS.length];
+const readyParts = () => S.parts.filter(p => p.pages.length);
+
+/* ---------- step visibility ---------- */
+function unlock(sec, on){
+  const el = $(sec); el.classList.toggle("locked", !on);
+  el.querySelector(".locked-note").hidden = on;
+  el.querySelectorAll(".unlocked-only").forEach(x => x.hidden = !on);
+}
+function roster(){
+  const out = [];
+  readyParts().forEach((p, ci) => (S.grid[p.id] || []).forEach((v, ri) => { const name = String(v).trim(); if (name) out.push({ name, partId: p.id, ci, ri }); }));
+  return out;
+}
+function refreshSteps(){
+  unlock("sec-parts", !!S.pdfBytes);
+  unlock("sec-names", !!S.pdfBytes && readyParts().length > 0);
+  $("sample-names-line").hidden = !S.isSample;
+  const haveNames = !!S.pdfBytes && roster().some(r => partById(r.partId)?.pages.length);
+  unlock("sec-stamp", haveNames);
+  updateSummary();
+}
+
+/* ---------- part discovery ---------- */
+// The part name sits in the top-left corner of the first page of each part.
+// PDFs with a text layer are read directly; image-only PDFs are read by the built-in part-name reader.
+function fpSame(a, b){
+  let d = 0; const A = a.coarse, B = b.coarse;
+  for (let i = 0; i < A.length; i++) d += Math.abs(A[i] - B[i]);
+  if (d / A.length / 255 > 0.012) return false;
+  let n = 0; const F = a.fine, G = b.fine;
+  for (let i = 0; i < F.length; i++) if (Math.abs(F[i] - G[i]) > 40 && ++n > 12) return false;
+  return true;
+}
+function samePage(a, b){
+  if (S.rep) return S.rep[a] === S.rep[b];
+  if (S.fps && S.fps[a] && S.fps[b]) return fpSame(S.fps[a], S.fps[b]);
+  const s = S.fullText[a]; return !!s && s.length > 12 && S.fullText[b] === s;
+}
+function keyFor(text){ const ph = phrasesIn(text); return ph.length ? { key: ph[0], vocab: true } : { key: norm(text), vocab: false }; }
+// Words that sit in a page's top-left corner but are never a part name: tempo and style markings, front-matter labels.
+const NOT_A_PART = /\b(allegro|andante|adagio|moderato|presto|lento|largo|larghetto|vivace|maestoso|grave|tempo|rit|rall|accel|dolce|cantabile|espressivo|legato|marcato|sweetly|flowing|gently|lively|slowly|brightly|freely|swing|ballad|march|waltz|duration|grade|program|notes|copyright|printed|licensed|license|reproduction|photocopy|page|commissioned|dedicated|arranged|composed|words|music|by|edition|catalog|www|com)\b/i;
+function plausibleName(t){
+  const s = t.trim(), words = s.split(/\s+/), letters = (s.match(/[A-Za-z]/g) || []).length;
+  return words.length <= 4 && s.length <= 32 && letters >= Math.max(3, s.replace(/\s/g, "").length * 0.7)
+    && /[aeiouy]/i.test(s) && !/[=©@]/.test(s) && !/^\d/.test(s) && !NOT_A_PART.test(s);
+}
+// The part name is read from what's on the page. Lines that repeat across many pages (title, composer, tempo) are ignored;
+// a line with an instrument word is preferred; otherwise any short line that looks like a name is used, as printed.
+function textLabels(linesByPage){
+  const perPage = linesByPage.map(ls => ls.map(t => ({ text: t, ...keyFor(t) })).filter(c => c.key));
+  // a line that turns up alongside many different part names (the piece title) is not a part name
+  const co = {};
+  const onPages = {};   // distinct pages a line appears on (identical copies of a page count once)
+  perPage.forEach((cs, i) => { const sig = linesByPage[i].join("\n"), ks = [...new Set(cs.map(c => c.key))]; ks.forEach(k => { (onPages[k] = onPages[k] || new Set()).add(sig); co[k] = co[k] || new Set(); ks.forEach(o => { if (o !== k) co[k].add(o); }); }); });
+  const textPages = new Set(linesByPage.filter(ls => ls.length).map(ls => ls.join("\n"))).size;
+  const titleLike = k => onPages[k].size >= 3 && ((co[k] && co[k].size >= 3) || onPages[k].size >= textPages * 0.3);   // repeats across many pages
+  return perPage.map(cs => {
+    const ok = cs.filter(c => !titleLike(c.key));
+    const c = ok.find(c => c.vocab) || ok.find(c => plausibleName(c.text));
+    if (!c) return null;
+    let key = c.key, display = norm(c.text) === c.key ? prettyLabel(c.text) : titleCase(c.key);
+    const all = phrasesIn(c.text);
+    if (all.length > 1 && all.every(isPercussion)) { key = all.join(" "); display = all.map(prettyPhrase).join(", "); }   // "Timpani, Triangle"
+    // "Percussion" followed by the instruments it plays: keep the list, so each percussion part stays separate
+    if (/^(auxiliary )?percussion( \d+)?$/.test(c.key)) {
+      const k = cs.indexOf(c), list = [];
+      for (const n of cs.slice(k + 1, k + 4)) { const ph = phrasesIn(n.text); if (ph.length && ph.every(isPercussion)) list.push(n.text.replace(/[,;\s]+$/, "")); else break; }
+      const names = list.flatMap(t => phrasesIn(t));
+      if (names.length) { key += " | " + names.join(" "); display += ` (${names.map(prettyPhrase).join(", ")})`; }
+    }
+    return { key, display, vocab: !!c.vocab };
+  });
+}
+// Front matter: a full score labels many instruments from different sections down its left margin
+// (a percussion part may list several drums, but they're all one section). Pages headed "Score" or
+// "Conductor" count too. Everything before the first real part (title page, notes, score) is skipped.
+const FAMILY = [
+  /\b(flute|piccolo|oboe|english horn|clarinet|bassoon|contrabassoon|saxophone|recorder)s?\b/,
+  /\b(horn|trumpet|cornet|flugelhorn|trombone|euphonium|baritone|tuba|sousaphone)s?\b/,
+  /\b(percussion|timpani|drum|drumset|mallet|bell|glockenspiel|xylophone|marimba|vibraphone|chime|cymbal|triangle|tambourine|gong|tam|tom|toms|bongo|conga|woodblock|block|clave|claves|maraca|shaker|cabasa|guiro|castanet|castanets|whip|slapstick|ratchet|anvil|crotale|crotales|cowbell|timbale|timbales|cajon|vibes|glock|kit)s?\b/,
+  /\b(violin|viola|cello|bass|contrabass|harp|piano|keyboard|guitar|organ|celesta)s?\b/,
+  /\b(soprano|alto|tenor|voice|vocal|choir)s?\b/,
+];
+const SCORE_WORDS = /\b(score|conductor)s?\b/;
+function looksLikeScore(phrases, minDistinct){
+  const ps = [...new Set(phrases.filter(p => !SCORE_WORDS.test(p)))];
+  const fams = new Set();
+  ps.forEach(p => {   // judge by the main word: "bass drum" is percussion, "bass clarinet" a woodwind
+    const head = p.split(" ").filter(w => !/^\d+$/.test(w)).pop() || "";
+    const k = FAMILY.findIndex(re => re.test(head)); if (k >= 0) fams.add(k);
+  });
+  return ps.length >= minDistinct && fams.size >= 2;
+}
+function fileHints(labels){
+  if (!S.files || S.files.length < 2) return labels;
+  const out = labels.slice(), used = new Set();
+  S.files.forEach((f, k) => {
+    const s = f.start, L = out[s], fromName = { key: norm(f.label) || `file ${k + 1}`, display: f.label, vocab: phrasesIn(f.label).length > 0 };
+    if (!L || L.pending) out[s] = fromName;
+    else if (!L.skip && (/^part \d+$/.test(L.key) || (used.has(L.key) && fromName.key !== L.key))) out[s] = fromName;   // layout-only "Part 3", or two files read as one part   // two files read as the same part: the names tell them apart
+    if (out[s] && out[s].key) used.add(out[s].key);
+  });
+  return out;
+}
+function markFrontMatter(labels, scoreLike){
+  labels = fileHints(labels);
+  S.skip = {};
+  const out = labels.map((L, i) => {
+    if ((scoreLike && scoreLike[i]) || (L && SCORE_WORDS.test(L.key))) { S.skip[i] = "Score"; return { skip: true }; }
+    return L;
+  });
+  let first = out.findIndex(L => L && !L.skip && L.vocab !== false);
+  if (S.files && S.files.length > 1) {   // separate files: the first part file marks where parts begin, whatever its name
+    const fs = S.files.map(f => f.start).find(s => out[s] && !out[s].skip);
+    if (fs != null && (first < 0 || fs < first)) first = fs;
+  }
+  for (let i = 0; i < (first < 0 ? 0 : first); i++) { if (!S.skip[i]) S.skip[i] = "Front matter"; out[i] = { skip: true }; }
+  return out;
+}
+function prettyPhrase(p){ return titleCase(p.replace(/ (\d+)$/, " $1")); }
+function isPercussion(phrase){ const head = phrase.split(" ").filter(w => !/^\d+$/.test(w)).pop() || ""; return FAMILY[2].test(head); }
+function partsFromLabels(labels){
+  const found = new Map(); let cur = null, start = -1;
+  const close = (end) => {
+    if (cur == null || found.has(cur.key)) return;
+    const pages = [start];
+    for (let j = start + 1; j <= end; j++) { if (samePage(start, j)) break; pages.push(j); }   // next copy begins
+    found.set(cur.key, { label: cur.display, pages, thumb: cur.thumb || null });
+  };
+  for (let i = 0; i < S.numPages; i++) {
+    // separate files: a part only starts at the beginning of a file; later pages in it continue that part
+    const L = S.files && S.files.length > 1 && !isFileStart(i) && labels[i] && !labels[i].skip ? null : labels[i];
+    if (L && (L.skip || L.pending)) { close(i - 1); cur = null; continue; }
+    if (isFileStart(i) && !L) { close(i - 1); cur = null; continue; }       // score pages end a part and belong to none
+    if (L && (!cur || isFileStart(i) || (L.key !== cur.key && !cur.key.startsWith(L.key + " |")))) { close(i - 1); cur = L; start = i; }
+  }
+  close(S.numPages - 1);
+  return [...found.values()].map(v => ({ id: S.nextId++, label: v.label, pages: v.pages, thumb: v.thumb }));
+}
+function scanStatus(text, opts = {}){
+  const el = $("scan-status");
+  if (!text) { el.hidden = true; return; }
+  const busy = !opts.bad && !opts.info;
+  el.hidden = false; el.className = "scan-status" + (opts.bad ? " bad" : "");
+  el.innerHTML = (busy ? `<span class="spin" aria-hidden="true"></span>` : "") + `<span class="txt"></span>` + (opts.progress != null ? `<progress max="1" value="${opts.progress}"></progress>` : "")
+    + (!busy || opts.cancel === false ? "" : `<button type="button" class="cancel-scan">Cancel</button>`)
+    + (opts.action ? `<button type="button" class="act-scan"></button>` : "");
+  el.querySelector(".txt").textContent = text;
+  if (busy) msg(text);   // keep the bottom bar in step with the scan
+  const b = el.querySelector(".cancel-scan"); if (b) b.addEventListener("click", cancelScan);
+  const a = el.querySelector(".act-scan"); if (a) { a.textContent = opts.action.label; a.addEventListener("click", opts.action.fn); }
+}
+async function renderPage(i, width, doc){
+  const page = await (doc || S.jsDoc).getPage(i + 1);
+  const vp0 = page.getViewport({ scale: 1 });
+  const vp = page.getViewport({ scale: width / vp0.width });
+  const c = document.createElement("canvas"); c.width = Math.round(vp.width); c.height = Math.round(vp.height);
+  const cx = c.getContext("2d"); cx.fillStyle = "#fff"; cx.fillRect(0, 0, c.width, c.height);
+  await page.render({ canvasContext: cx, viewport: vp }).promise;
+  return c;
+}
+function grey(c, w, h){
+  const f = document.createElement("canvas"); f.width = w; f.height = h;
+  const fx = f.getContext("2d", { willReadFrequently: true }); fx.drawImage(c, 0, 0, w, h);
+  const d = fx.getImageData(0, 0, w, h).data; const out = new Uint8Array(w * h);
+  for (let i = 0; i < out.length; i++) out[i] = (d[i * 4] + d[i * 4 + 1] + d[i * 4 + 2]) / 3;
+  return out;
+}
+// Two fingerprints: a tiny one to rule out obvious differences fast, and a 175-pixel-wide one compared
+// pixel by pixel. Real copies are pixel-identical; a 2nd part differs from the 1st by hundreds of pixels.
+function fingerprint(c){ return { coarse: grey(c, 48, 64), fine: grey(c, 175, 226) }; }
+// Copies of a part usually reuse the very same stored page content (in ePrint files, the same image).
+// Comparing the PDF's structure finds them in a moment, without drawing anything.
+async function structuralCopies(){
+  try {
+    const doc = await getLibDoc();
+    const { PDFName, PDFArray } = PDFLib;
+    const refsOf = (dict, name) => {
+      const d = dict && dict.lookup(PDFName.of(name));
+      return d && d.entries ? d.entries().map(([k, v]) => `${k}=${v}`).sort().join(",") : "";
+    };
+    const seen = new Map(), rep = [];
+    doc.getPages().forEach((p, i) => {
+      const { Contents, Resources } = p.node.normalizedEntries();
+      const streams = Contents instanceof PDFArray ? Contents.asArray().map(r => doc.context.lookup(r)) : [Contents];
+      let hash = 2166136261, len = 0;
+      for (const s of streams) {
+        const b = s && s.getContents ? s.getContents() : new Uint8Array(0); len += b.length;
+        for (let k = 0; k < b.length; k++) { hash ^= b[k]; hash = Math.imul(hash, 16777619) >>> 0; }
+      }
+      const mb = p.getMediaBox();
+      const key = `${len}:${hash}|${refsOf(Resources, "XObject")}|${refsOf(Resources, "Font")}|${p.getRotation().angle}|${mb.width}x${mb.height}`;
+      if (!seen.has(key)) seen.set(key, i);
+      rep.push(seen.get(key));
+    });
+    return rep;
+  } catch (e) { console.warn("Structural copy check failed; comparing pixels instead", e); return null; }
+}
+// Extra PDF readers, each with its own background thread, so big page images are unpacked in parallel.
+async function openReaders(){
+  const cores = navigator.hardwareConcurrency || 4, mem = navigator.deviceMemory || 8;
+  const want = Math.max(1, Math.min(3, Math.floor(cores / 2), mem <= 4 ? 2 : 3));
+  const docs = [S.jsDoc];
+  for (let k = 1; k < want; k++) {
+    try { docs.push(await pdfjsLib.getDocument({ data: S.pdfBytes.slice(), ...PDFJS_OPTS }).promise); } catch (e) { break; }
+  }
+  return docs;
+}
+// Look at every unique page once, at modest size and a few pages at a time, to find where the first staff starts.
+// The top-left corner is drawn sharp later, only for pages that need reading.
+async function preparePages(id, alive){
+  if (S.prep && S.prep.loadId === id) return S.prep;
+  const N = S.numPages, staff = new Array(N).fill(1), gap = new Array(N).fill(0), lines = new Array(N).fill(0);
+  scanStatus("Finding duplicate copies…", { progress: 0.02 });
+  const srep = await structuralCopies();
+  if (!alive()) return null;
+  const docs = await openReaders();
+  if (!alive()) { docs.slice(1).forEach(d => d.destroy()); return null; }
+  let fps = null, rep = srep, order;
+  if (srep) order = srep.map((r, i) => r === i ? i : -1).filter(i => i >= 0);   // draw each unique page once
+  else { fps = new Array(N).fill(null); order = [...Array(N).keys()]; }
+  let next = 0, done = 0;
+  const lane = async (k) => {
+    const doc = docs[k % docs.length];
+    while (next < order.length) {
+      const i = order[next++];
+      if (!alive()) return;
+      try { const c = await renderPage(i, 700, doc); if (fps) fps[i] = fingerprint(c); const L = pageLayout(c); staff[i] = L.first; gap[i] = L.gap; lines[i] = L.lines; } catch (e) {}
+      done++;
+      if (alive()) scanStatus(`${S.hasText ? "Reading pages as images" : "No readable text: " + textDiagnosis() + ". Looking at the pages as images instead"}: ${done} of ${plural(order.length, "unique page")}${srep ? ` (${N - order.length} duplicate copies skipped)` : ""}…`, { progress: (done / order.length) * 0.25 });
+    }
+  };
+  await Promise.all(Array.from({ length: docs.length + 1 }, (_, k) => lane(k)));
+  if (!alive()) { docs.slice(1).forEach(d => d.destroy()); return null; }
+  if (!rep) {
+    rep = fps.map(() => -1);
+    for (let i = 0; i < N; i++) {
+      rep[i] = i; if (!fps[i]) continue;
+      for (let j = 0; j < i; j++) if (rep[j] === j && fps[j] && fpSame(fps[i], fps[j])) { rep[i] = j; break; }
+    }
+    S.fps = fps;
+  }
+  rep.forEach((r, i) => { if (r !== i) { staff[i] = staff[r]; gap[i] = gap[r]; lines[i] = lines[r]; } });
+  const scoreish = scorePagesByLayout(gap, lines);
+  S.rep = rep;
+  const uniq = rep.map((r, i) => r === i ? i : -1).filter(i => i >= 0);
+  const cornerCache = {}, thumbCache = {};
+  let active = 0, rr = 0; const waiting = [];   // draw at most 3 corners at a time, spread over the readers
+  const limited = (fn) => new Promise((res, rej) => {
+    const go = () => { active++; fn().then(res, rej).finally(() => { active--; if (waiting.length) waiting.shift()(); }); };
+    active < 3 ? go() : waiting.push(go);
+  });
+  const prep = { loadId: id, rep, staff, gap, uniq, docs, scoreish };
+  prep.corner = (i) => cornerCache[i] || (cornerCache[i] = limited(() => renderCorner(i, prep.docs[(rr++) % prep.docs.length])));
+  prep.thumb = async (i) => thumbCache[i] || (thumbCache[i] = (await prep.corner(i)).toDataURL("image/jpeg", 0.8));
+  prep.release = () => { prep.docs.slice(1).forEach(d => { try { d.destroy(); } catch (e) {} }); prep.docs = [S.jsDoc]; };
+  S.prep = prep;
+  return prep;
+}
+// Draw just the top-left corner (left 55%, top 20%) at high resolution for the text reader.
+async function renderCorner(i, doc){
+  const page = await (doc || S.jsDoc).getPage(i + 1);
+  const vp0 = page.getViewport({ scale: 1 });
+  const vp = page.getViewport({ scale: 1400 / vp0.width });
+  const w = Math.round(vp.width * 0.55), h = Math.round(vp.height * 0.2);
+  const c = document.createElement("canvas"); c.width = w; c.height = h;
+  const cx = c.getContext("2d"); cx.fillStyle = "#fff"; cx.fillRect(0, 0, w, h);
+  await page.render({ canvasContext: cx, viewport: vp }).promise;   // anything outside the corner is clipped away
+  return c;
+}
+// What the page's staves look like:
+//  first - vertical position (0-1) of the first staff: lower on a part's first page, where the title sits above it
+//  gap   - spacing between the lines of a staff, as a share of page height: a full score uses much smaller staves
+//  lines - how many staff lines the page has: a full score crams in far more than a part
+function pageLayout(c){
+  const w = c.width, h = c.height;
+  const d = c.getContext("2d").getImageData(0, 0, w, h).data;
+  const dark = (x, y) => { const o = (y * w + x) * 4; return d[o] + d[o + 1] + d[o + 2] < 600; };
+  const x0 = Math.round(w * 0.1), x1 = Math.round(w * 0.9), step = 2, cols = Math.ceil((x1 - x0) / step);
+  let first = 1;
+  for (let y = 2; y < h - 2 && first === 1; y++) {
+    let n = 0;   // a staff line may be slightly tilted in a scan, so look a couple of rows either side
+    for (let x = x0; x < x1; x += step) if (dark(x, y - 2) || dark(x, y - 1) || dark(x, y) || dark(x, y + 1) || dark(x, y + 2)) n++;
+    if (n / cols > 0.6) first = y / h;
+  }
+  const centres = []; let run = null;
+  for (let y = 0; y < h; y++) {
+    let n = 0; for (let x = x0; x < x1; x += step) if (dark(x, y)) n++;
+    if (n / cols > 0.5) { if (run && y - run[1] <= 1) run[1] = y; else { if (run) centres.push((run[0] + run[1]) / 2); run = [y, y]; } }
+  }
+  if (run) centres.push((run[0] + run[1]) / 2);
+  const gaps = []; for (let k = 1; k < centres.length; k++) gaps.push(centres[k] - centres[k - 1]);
+  let gap = 0;
+  if (gaps.length >= 4) {
+    const sorted = [...gaps].sort((a, b) => a - b);
+    const small = sorted[Math.floor(sorted.length / 4)];                 // a typical within-staff spacing
+    const inside = sorted.filter(g => g <= small * 1.6);
+    gap = inside[Math.floor(inside.length / 2)] / h;
+  }
+  // fewer than two staves' worth of lines (a cover's border, a rule under a heading) isn't music
+  if (centres.length < 5) return { first: 1, gap: 0, lines: centres.length };
+  return { first, gap, lines: centres.length };
+}
+// Full-score pages: staves drawn much smaller than on most pages, or far more staff lines than most pages.
+function scorePagesByLayout(gap, lines){
+  const gs = gap.filter(g => g > 0).sort((a, b) => a - b), ls = lines.filter(n => n > 0).sort((a, b) => a - b);
+  if (gs.length < 4) return gap.map(() => false);
+  const refGap = gs[Math.floor(gs.length * 0.8)];          // most pages in a set are parts, at full staff size
+  const refLines = ls[Math.floor(ls.length * 0.5)];
+  return gap.map((g, i) => (g > 0 && g < refGap * 0.75) || (lines[i] >= refLines * 1.5 && lines[i] >= 60));
+}
+const withTimeout = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), ms))]);
+// Pages whose music starts noticeably lower than usual: the title sits above it, so a part probably begins there.
+// generous = true lowers the bar, for choosing which pages to read (reading an extra page is cheap; missing a part isn't).
+function layoutStarts(prep, generous){
+  const sc = prep.scoreish || [], gaps = prep.gap || [];
+  // pages whose ruled lines are spaced far wider than a staff are text pages (notes, instrument lists), not parts
+  const gs = gaps.filter(g => g > 0).sort((a, b) => a - b), ref = gs.length ? gs[Math.floor(gs.length * 0.8)] : 0;
+  const v = prep.staff.map((x, i) => sc[i] || (ref && gaps[i] > ref * 1.4) ? 1 : x); const real = v.filter(x => x < 1);
+  if (!real.length) return v.map(() => false);
+  // first pages (title above the music) and later pages (music from the top) form two groups; find the jump between them
+  const sorted = [...new Set(real.map(x => Math.round(x * 1000) / 1000))].sort((a, b) => a - b);
+  let jump = 0, at = 0;
+  for (let k = 1; k < sorted.length; k++) if (sorted[k] - sorted[k - 1] > jump) { jump = sorted[k] - sorted[k - 1]; at = k; }
+  if (jump < 0.025) return v.map(x => x < 1);             // no clear jump: every music page may start a part
+  const below = sorted[at - 1], above = sorted[at];
+  const cut = generous ? below + (above - below) * 0.3 : (below + above) / 2;
+  return v.map((x, i) => x < 1 && (x > cut || i === 0));
+}
+/* ---------- built-in part-name reader ----------
+   A small text reader for printed part names, so image-only PDFs work with no internet.
+   It learns letter shapes by drawing the alphabet in the fonts on this computer, cuts the
+   image into lines and letters, matches each letter's shape, then corrects words against
+   a dictionary of instrument words. It isn't a general text reader: it only needs to get
+   part names right. */
+const MiniOCR = (() => {
+  const N = 20;                                      // letters are compared as 20x20 ink maps
+  const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const FONTS = [
+    '"Times New Roman", Times, "Liberation Serif", "Nimbus Roman", "DejaVu Serif", serif',
+    'Georgia, "DejaVu Serif", serif',
+    'Arial, Helvetica, "Liberation Sans", "Nimbus Sans", "DejaVu Sans", sans-serif',
+    '"Helvetica Neue", Helvetica, Arial, sans-serif',
+    'Garamond, "Palatino Linotype", Palatino, "URW Palladio L", serif',
+  ];
+  let templates = null;
+
+  // ink map of a box in a darkness array, squeezed into N x N, plus its width-to-height ratio
+  function feature(dark, W, x0, y0, x1, y1){
+    const w = x1 - x0 + 1, h = y1 - y0 + 1, v = new Float32Array(N * N);
+    for (let gy = 0; gy < N; gy++) {
+      const ya = y0 + (gy * h) / N, yb = y0 + ((gy + 1) * h) / N;
+      for (let gx = 0; gx < N; gx++) {
+        const xa = x0 + (gx * w) / N, xb = x0 + ((gx + 1) * w) / N;
+        let s = 0, n = 0;
+        for (let y = Math.floor(ya); y < Math.max(Math.floor(ya) + 1, Math.ceil(yb)); y++)
+          for (let x = Math.floor(xa); x < Math.max(Math.floor(xa) + 1, Math.ceil(xb)); x++) { s += dark[y * W + x] || 0; n++; }
+        v[gy * N + gx] = n ? s / n : 0;
+      }
+    }
+    return { v, ar: w / h };
+  }
+  function buildTemplates(){
+    const out = [], c = document.createElement("canvas"); c.width = 110; c.height = 110;
+    const cx = c.getContext("2d", { willReadFrequently: true });
+    for (const size of [26, 60]) for (const family of FONTS) for (const weight of ["normal", "bold"]) for (const style of ["normal", "italic"]) {
+      if (style === "italic" && weight === "bold" && family !== FONTS[0]) continue;
+      for (const ch of CHARS) {
+        cx.fillStyle = "#fff"; cx.fillRect(0, 0, 110, 110);
+        cx.fillStyle = "#000"; cx.font = `${style} ${weight} ${size}px ${family}`; cx.textBaseline = "alphabetic";
+        cx.fillText(ch, 20, size > 40 ? 80 : 60);
+        const d = cx.getImageData(0, 0, 110, 110).data, dark = new Float32Array(110 * 110);
+        let x0 = 110, y0 = 110, x1 = -1, y1 = -1;
+        for (let i = 0; i < dark.length; i++) {
+          const k = 1 - d[i * 4] / 255; if (k > 0.5) { dark[i] = 1; const x = i % 110, y = (i / 110) | 0; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+        }
+        if (x1 < 0) continue;
+        out.push({ ch, ...feature(dark, 110, x0, y0, x1, y1) });
+      }
+    }
+    return out;
+  }
+  function classify(f){
+    let best = null, bd = Infinity, second = Infinity;
+    for (const t of templates) {
+      let d = 0; const a = f.v, b = t.v;
+      for (let i = 0; i < a.length; i++) { const e = a[i] - b[i]; d += e * e; }
+      d = d / a.length + 0.08 * Math.pow(Math.log(f.ar / t.ar), 2);
+      if (d < bd) { second = bd; bd = d; best = t.ch; } else if (d < second) second = d;
+    }
+    return { ch: best, d: bd };
+  }
+  function otsu(gray){
+    const hist = new Array(256).fill(0); for (const g of gray) hist[g]++;
+    let sum = 0; for (let i = 0; i < 256; i++) sum += i * hist[i];
+    let sB = 0, wB = 0, best = 0, t = 128;
+    for (let i = 0; i < 256; i++) {
+      wB += hist[i]; if (!wB) continue; const wF = gray.length - wB; if (!wF) break;
+      sB += i * hist[i]; const mB = sB / wB, mF = (sum - sB) / wF, between = wB * wF * (mB - mF) * (mB - mF);
+      if (between > best) { best = between; t = i; }
+    }
+    return Math.min(t, 200);
+  }
+  // connected pieces of ink (8-connected)
+  function components(bin, W, H){
+    const lab = new Int32Array(W * H), comps = []; let next = 1; const stack = [];
+    for (let i = 0; i < W * H; i++) {
+      if (!bin[i] || lab[i]) continue;
+      let x0 = W, y0 = H, x1 = 0, y1 = 0, n = 0; lab[i] = next; stack.push(i);
+      while (stack.length) {
+        const p = stack.pop(), x = p % W, y = (p / W) | 0; n++;
+        if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+          const xx = x + dx, yy = y + dy; if (xx < 0 || yy < 0 || xx >= W || yy >= H) continue;
+          const q = yy * W + xx; if (bin[q] && !lab[q]) { lab[q] = next; stack.push(q); }
+        }
+      }
+      comps.push({ id: next, x0, y0, x1, y1, n }); next++;
+    }
+    return { comps, lab };
+  }
+  // read one glyph box (maybe several letters stuck together) -> best string
+  function readBox(dark, W, box, lineH){
+    const w = box.x1 - box.x0 + 1, h = box.y1 - box.y0 + 1;
+    const single = classify(feature(dark, W, box.x0, box.y0, box.x1, box.y1));
+    if (w / lineH < 0.85) return single.ch;
+    // possibly touching letters: try cutting at thin columns, keep the cheapest reading
+    const cols = []; for (let x = box.x0; x <= box.x1; x++) { let s = 0; for (let y = box.y0; y <= box.y1; y++) s += dark[y * W + x]; cols.push(s); }
+    const cuts = []; for (let k = 2; k < cols.length - 2; k++) if (cols[k] <= Math.max(1, h * 0.18) && cols[k] <= cols[k - 1] && cols[k] <= cols[k + 1]) cuts.push(box.x0 + k);
+    const tight = (xa, xb) => { let ya = box.y1, yb = box.y0; for (let y = box.y0; y <= box.y1; y++) for (let x = xa; x <= xb; x++) if (dark[y * W + x]) { if (y < ya) ya = y; if (y > yb) yb = y; break; } return [ya, yb]; };
+    const pts = [box.x0 - 1, ...cuts.filter((c, i, a) => i === 0 || c - a[i - 1] > lineH * 0.15), box.x1];
+    const memo = new Map();
+    const seg = (i) => {   // best reading from cut i to the end
+      if (i === pts.length - 1) return { s: "", d: 0 };
+      if (memo.has(i)) return memo.get(i);
+      let best = { s: "", d: Infinity };
+      for (let j = i + 1; j < pts.length && j <= i + 4; j++) {
+        const xa = pts[i] + 1, xb = pts[j]; if (xb - xa < 2) continue;
+        const [ya, yb] = tight(xa, xb); if (yb - ya < 2) continue;
+        const r = classify(feature(dark, W, xa, ya, xb, yb)), rest = seg(j);
+        const d = r.d + rest.d + 0.004;
+        if (d < best.d) best = { s: r.ch + rest.s, d };
+      }
+      memo.set(i, best); return best;
+    };
+    const split = pts.length > 2 ? seg(0) : null;
+    return split && split.s.length > 1 && split.d < single.d * 1.6 ? split.s : single.ch;
+  }
+  function readImage(canvas){
+    if (!templates) templates = buildTemplates();
+    const W = canvas.width, H = canvas.height;
+    const px = canvas.getContext("2d", { willReadFrequently: true }).getImageData(0, 0, W, H).data;
+    const gray = new Uint8Array(W * H); for (let i = 0; i < gray.length; i++) gray[i] = (px[i * 4] * 0.3 + px[i * 4 + 1] * 0.59 + px[i * 4 + 2] * 0.11) | 0;
+    const t = otsu(gray), bin = new Uint8Array(W * H), dark = new Float32Array(W * H);
+    for (let i = 0; i < gray.length; i++) if (gray[i] < t) { bin[i] = 1; dark[i] = 1; }
+    // wipe long horizontal strokes (staff lines, rules) so they don't glue letters together
+    const longRun = Math.max(40, W * 0.08);
+    for (let y = 0; y < H; y++) { let s = -1; for (let x = 0; x <= W; x++) { const on = x < W && bin[y * W + x]; if (on && s < 0) s = x; if (!on && s >= 0) { if (x - s > longRun) for (let k = s; k < x; k++) { bin[y * W + k] = 0; dark[y * W + k] = 0; } s = -1; } } }
+    const { comps } = components(bin, W, H);
+    const pieces = comps.filter(c => c.n >= 3 && (c.y1 - c.y0) < H * 0.22 && (c.x1 - c.x0) < W * 0.5);
+    // gather pieces into text lines
+    // left to right: a piece joins a line if it sits in the line's band, is a similar size (or is small punctuation
+    // right next to it), and isn't far off to the side. Small text beside a big title stays on its own line.
+    pieces.sort((a, b) => a.x0 - b.x0);
+    const lines = [];
+    for (const c of pieces) {
+      const ch = c.y1 - c.y0 + 1;
+      let home = null, bestGap = Infinity;
+      for (const L of lines) {
+        const overlap = Math.min(c.y1, L.y1) - Math.max(c.y0, L.y0), gapX = c.x0 - L.x1;
+        if (overlap < Math.min(ch, L.h) * 0.4 || gapX > L.h * 2.5) continue;
+        const similar = ch >= L.h * 0.55 && ch <= L.h * 1.8, punct = ch < L.h * 0.55 && gapX < L.h * 0.8;
+        if ((similar || punct) && gapX < bestGap) { home = L; bestGap = gapX; }
+      }
+      if (home) {
+        home.items.push(c); home.x1 = Math.max(home.x1, c.x1);
+        if (ch >= home.h * 0.55) { home.hs.push(ch); home.hs.sort((a, b) => a - b); home.h = home.hs[Math.floor(home.hs.length * 0.75)]; home.y0 = Math.min(home.y0, c.y0); home.y1 = Math.max(home.y1, c.y1); }
+      } else lines.push({ y0: c.y0, y1: c.y1, x1: c.x1, h: ch, hs: [ch], items: [c] });
+    }
+    lines.forEach(L => L.x0 = Math.min(...L.items.map(c => c.x0)));
+    lines.sort((a, b) => (a.y0 + a.y1) / 2 - (b.y0 + b.y1) / 2 || a.x0 - b.x0);
+    const out = [];
+    for (const L of lines) {
+      const hs = L.items.map(c => c.y1 - c.y0 + 1).sort((a, b) => a - b);
+      const lineH = hs[Math.floor(hs.length * 0.75)];
+      if (lineH < 7 || L.items.length < 2) continue;
+      // put dots, accents and the halves of split letters back with their letter
+      const items = L.items.slice().sort((a, b) => a.x0 - b.x0), merged = [];
+      for (const c of items) {
+        const prev = merged[merged.length - 1], small = (c.y1 - c.y0 + 1) < lineH * 0.45;
+        if (prev) {
+          const ov = Math.min(prev.x1, c.x1) - Math.max(prev.x0, c.x0), narrow = Math.min(prev.x1 - prev.x0, c.x1 - c.x0) + 1;
+          const prevSmall = (prev.y1 - prev.y0 + 1) < lineH * 0.45;
+          if (ov > narrow * 0.5 && (small || prevSmall)) { prev.x0 = Math.min(prev.x0, c.x0); prev.x1 = Math.max(prev.x1, c.x1); prev.y0 = Math.min(prev.y0, c.y0); prev.y1 = Math.max(prev.y1, c.y1); continue; }
+        }
+        merged.push({ ...c });
+      }
+      let text = "", lastX = null;
+      const base = Math.max(...merged.map(c => c.y1));
+      for (const c of merged) {
+        const h = c.y1 - c.y0 + 1, w = c.x1 - c.x0 + 1;
+        if (lastX != null && c.x0 - lastX > lineH * 0.28) text += " ";
+        lastX = c.x1;
+        if (h < lineH * 0.4) {                        // punctuation
+          const mid = (c.y0 + c.y1) / 2;
+          if (w > h * 1.6 && mid < base - lineH * 0.25) text += "-";
+          else if (mid > base - lineH * 0.3) text += ".";
+          continue;
+        }
+        text += readBox(dark, W, c, lineH);
+      }
+      text = text.replace(/\s+/g, " ").trim();
+      const letters = (text.match(/[A-Za-z]/g) || []).length;
+      if (text && letters >= text.replace(/\s/g, "").length * 0.5) out.push(tidy(text));   // skip rows of music symbols
+    }
+    return out;
+  }
+  // context fixes: letters inside words, digits inside numbers, then the instrument dictionary
+  const DICT = ("flute piccolo oboe clarinet bassoon contrabassoon saxophone horn trumpet cornet flugelhorn trombone euphonium baritone tuba sousaphone " +
+    "percussion timpani drum drums drumset mallet mallets bell bells glockenspiel xylophone marimba vibraphone chimes piano keyboard organ harp guitar bass " +
+    "violin viola cello contrabass soprano alto tenor voice vocal choir score conductor recorder ukulele synthesizer celesta harmonica accordion " +
+    "english french string electric acoustic snare auxiliary solo full condensed in and part " +
+    "cymbal cymbals triangle tambourine gong toms bongos congas woodblock claves maracas shaker cabasa guiro castanets whip slapstick ratchet anvil crotales cowbell timbales cajon vibes " +
+    "suspended crash concert temple sleigh tubular orchestra field ride splash finger wind").split(" ");
+  // letters this reader tends to mix up cost less to swap
+  const LOOK = ["ceoa", "li1tfjr!|", "nuh", "bhk", "s5", "gq9", "vy", "z2", "o0d", "b6", "a4"];
+  const near = (x, y) => x === y ? 0 : LOOK.some(g => g.includes(x) && g.includes(y)) ? 0.4 : 1;
+  function wlev(a, b){
+    const m = a.length, n = b.length, d = Array.from({ length: m + 1 }, (_, i) => [i]);
+    for (let j = 1; j <= n; j++) d[0][j] = j;
+    for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + near(a[i - 1], b[j - 1]));
+    return d[m][n];
+  }
+  function variants(w){   // "rn" read as "m", "cl" read as "d", and back
+    const out = new Set([w]);
+    for (const [x, y] of [["m", "rn"], ["rn", "m"], ["d", "cl"], ["cl", "d"], ["w", "vv"], ["nn", "m"], ["n", "ri"], ["nn", "rin"], ["ln", "lin"]]) {
+      let k = w.indexOf(x); while (k >= 0) { out.add(w.slice(0, k) + y + w.slice(k + x.length)); k = w.indexOf(x, k + 1); }
+      if (w.includes(x)) out.add(w.split(x).join(y));
+    }
+    return [...out];
+  }
+  function bestWord(low){
+    if (DICT.includes(low)) return { w: low, d: 0 };
+    let best = null, bd = 99;
+    for (const v of variants(low)) for (const d of DICT) { if (Math.abs(d.length - v.length) > 2) continue; const e = wlev(v, d); if (e < bd) { bd = e; best = d; } }
+    // short words only when the match is near-certain: "HOm" -> "horn" yes, "HAN" -> "harp" no
+    const limit = low.length <= 3 ? 0 : low.length <= 5 ? 0.8 : low.length * 0.3;
+    return best && bd <= limit ? { w: best, d: bd } : null;
+  }
+  const cap = (src, w) => src === src.toUpperCase() && /[A-Z]{2}/.test(src) ? w.toUpperCase() : w[0].toUpperCase() + w.slice(1);
+  function tidy(line){
+    let toks = line.split(" ").filter(Boolean);
+    // glue back words that a stray gap split ("Pcrc ussj on" -> "Percussion")
+    const alpha = t => /^[A-Za-z|015]+[.,]?$/.test(t) && /[A-Za-z]/.test(t);   // 0, 1, 5 inside a word are o, l, s
+    const digitLike = t => /^[1lI|]$/.test(t);          // a lone 1 after a word is the part number, not a letter
+    for (let i = 0; i < toks.length; i++) {
+      if (!alpha(toks[i]) || DICT.includes(toks[i].toLowerCase())) continue;
+      const keyLike = /^[B8E][^\s]?$/.test(toks[i]);   // "B♭" or "E♭" in front of a word, or the first letter of it?
+      const tryJoin = (from, j) => {
+        const span = toks.slice(from, j);
+        if (span.length < 2 || digitLike(span[span.length - 1])) return null;
+        if (!span.every((t, k) => alpha(t) || (t === "1" && k > 0 && k < span.length - 1))) return null;
+        const joined = span.join("").replace(/[.,|]/g, "").replace(/0/g, "o").replace(/1/g, "l").replace(/5/g, "s");
+        const hit = joined.length >= 4 && bestWord(joined.toLowerCase());
+        return hit ? { ...hit, joined } : null;
+      };
+      for (let j = Math.min(toks.length, i + 5); j > i + 1; j--) {
+        const hit = tryJoin(i, j); if (!hit) continue;
+        if (keyLike) { const without = tryJoin(i + 1, j) || (j === i + 2 ? bestWord(toks[i + 1].toLowerCase()) : null); if (without && without.d <= hit.d + 0.5) break; }
+        toks.splice(i, j - i, cap(hit.joined, hit.w)); break;
+      }
+    }
+    toks = toks.map((tok, k) => {
+      const nextWord = toks[k + 1] && bestWord(toks[k + 1].replace(/[^A-Za-z]/g, "").toLowerCase() || "#");
+      if (/^[1lI|i]s[t.]?$/i.test(tok) && nextWord !== null) return "1st";
+      if (/^[2Zz]nd$/i.test(tok)) return "2nd";
+      if (/^3rd$/i.test(tok)) return "3rd";
+      if (/^[B8E][^\sa-z0-9]?$|^[B8E][a-zA-Z>7]$/.test(tok) && tok !== "Bass" && nextWord) return (tok[0] === "E" ? "E" : "B") + "♭";   // key with its flat sign
+      if (tok.length === 1 && /[lI|i]/.test(tok)) return "1";
+      if (tok.length === 1 && /[Zz]/.test(tok)) return "2";
+      if (tok.length === 1 && /[S]/.test(tok)) return "5";
+      const letters = (tok.match(/[A-Za-z]/g) || []).length, digits = (tok.match(/[0-9]/g) || []).length;
+      if (digits > letters) return tok.replace(/[lI|i]/g, "1").replace(/[Oo]/g, "0").replace(/[Zz]/g, "2").replace(/S/g, "5");
+      const w = tok.replace(/0/g, "o").replace(/1/g, "l").replace(/5/g, "s"), core = w.replace(/[^A-Za-z]/g, "");
+      if (core.length >= 3) { const hit = bestWord(core.toLowerCase()); if (hit && hit.w !== core.toLowerCase()) return cap(core, hit.w); }
+      return w;
+    });
+    return toks.join(" ");
+  }
+  return { readImage, tidy };
+})();
+
+// Read the corners with the built-in part-name reader. Only pages that look like the start of a part are read;
+// their corners are drawn a few at a time while earlier ones are being read.
+const cleanOcrLine = (t) => t.replace(/(\s)[|Il](?=\s*$|\s)/g, "$11").replace(/[|_~{}\[\]<>]/g, " ").replace(/\s+/g, " ").trim();
+async function ocrLabels(alive, prep, onPartial){
+  const uniq = prep.uniq;
+  const starts = layoutStarts(prep, true);
+  let todo = uniq.filter(i => starts[i] || isFileStart(i));
+  if (!todo.length) todo = uniq;
+  const linesByPage = new Array(S.numPages).fill(null).map(() => []);
+  const pending = new Set();   // pages queued for reading but not read yet
+  const build = () => {
+    const lines = prep.rep.map(r => linesByPage[r]);
+    const scoreLike = lines.map((ls, i) => (prep.scoreish && prep.scoreish[i]) || looksLikeScore(ls.flatMap(t => phrasesIn(t)), 3));
+    const labels = markFrontMatter(textLabels(lines), scoreLike);
+    return pending.size ? labels.map((L, i) => pending.has(prep.rep[i]) ? { pending: true } : L) : labels;
+  };
+  let lastPartial = 0;
+  const partial = (force) => {   // show parts in step 2 as they're found
+    const now = Date.now();
+    if (!onPartial || !alive() || (!force && now - lastPartial < 500)) return;
+    lastPartial = now; onPartial(build());
+  };
+  const readPagesList = async (list, label) => {
+    let done = 0; list.forEach(i => pending.add(i));
+    const show = () => scanStatus(`${label} ${done} of ${plural(list.length, "page")} read (${S.numPages - list.length} other pages skipped)…`, { progress: 0.25 + 0.75 * done / list.length });
+    show();
+    list.forEach(i => prep.corner(i).catch(() => null));     // start drawing corners ahead of the reader
+    for (const i of list) {
+      if (!alive()) return;
+      try {
+        const c = await prep.corner(i);
+        linesByPage[i] = MiniOCR.readImage(c).map(cleanOcrLine)
+          .filter(t => /[a-z]{3}/i.test(t) && t.length <= 60 && t.split(" ").length <= 7);   // part names are short lines
+      } catch (e) { console.warn(`Couldn't read page ${i + 1}`, e); }
+      pending.delete(i); done++;
+      if (alive()) { show(); partial(done === list.length); }
+      await new Promise(r => setTimeout(r, 0));               // let the page breathe between pages
+    }
+  };
+  scanStatus("Reading part names…", { progress: 0.25 });
+  await readPagesList(todo, "Reading part names:");
+  if (!alive()) return null;
+  let labels = build();
+  // nothing recognised on the likely first pages: read the remaining pages before giving up
+  const rest = uniq.filter(i => !todo.includes(i) && !(prep.scoreish && prep.scoreish[i]));
+  if (!labels.some(L => L && !L.skip) && rest.length) {
+    await readPagesList(rest, "No part names on the likely first pages; reading the rest:");
+    if (!alive()) return null;
+    labels = build();
+  }
+  return labels;
+}
+// Without reading anything: find part starts from the page layout and merge duplicate copies; the user types the names.
+async function layoutLabels(prep){
+  const v = prep.staff; const real = v.filter(x => x < 1);
+  if (!real.length) return null;
+  const st = layoutStarts(prep, false); const isStart = (i) => st[i] || isFileStart(i);
+  const labels = []; let n = 0; const keyOfRep = {};
+  for (let i = 0; i < S.numPages; i++) {
+    if (!isStart(i)) { labels.push(null); continue; }
+    const r = prep.rep[i];
+    if (!keyOfRep[r]) { n++; keyOfRep[r] = { key: `part ${n}`, display: `Part ${n}`, thumb: await prep.thumb(r).catch(() => null) }; }
+    labels.push(keyOfRep[r]);
+  }
+  return markFrontMatter(labels, prep.scoreish);
+}
+function cancelScan(){
+  S.scanId++;
+  if (S.ocrWorker) { S.ocrWorker.terminate().catch(() => {}); S.ocrWorker = null; }
+  if (S.prep && S.prep.release) S.prep.release();
+  $("detect").disabled = false;
+  scanStatus("Scan cancelled. Add the parts by hand, or press Scan again.", { bad: true });
+  afterAssign();
+  msg("Scan cancelled.");
+}
+// "Parts start at page": every page before it (title page, notes, score) is left out of the parts.
+// Filled in from detection; once you type a page, that page is used until a new PDF is loaded.
+function withStart(labels){
+  if (!labels) return labels;
+  if (!S.partsStartUser) {
+    const first = labels.findIndex(L => L && !L.skip && !L.pending);
+    S.partsStart = first >= 0 ? first + 1 : null;
+  }
+  const cut = (S.partsStart || 1) - 1;
+  if (cut <= 0) return labels;
+  return labels.map((L, i) => {
+    if (i >= cut) return L;
+    if (S.skip && !S.skip[i]) S.skip[i] = "Before parts";
+    return { skip: true };
+  });
+}
+function keepNames(old){   // typed names stay with their part when the part list is rebuilt, even if it drops out for a while
+  const grid = {}; S.nameStash = S.nameStash || {};
+  old.forEach(o => {
+    if (!S.grid[o.id]) return;
+    const now = S.parts.find(p => norm(p.label) === norm(o.label));
+    if (now) grid[now.id] = S.grid[o.id]; else S.nameStash[norm(o.label)] = S.grid[o.id];
+  });
+  S.parts.forEach(p => { const k = norm(p.label); if (!grid[p.id] && S.nameStash[k]) { grid[p.id] = S.nameStash[k]; delete S.nameStash[k]; } });
+  S.grid = grid;
+}
+function syncStartBox(){
+  const box = $("parts-start"); if (!box) return;
+  box.max = S.numPages || 1;
+  if (document.activeElement !== box) box.value = S.partsStart || "";
+  box.parentElement.classList.toggle("user", !!S.partsStartUser);
+}
+function setPartsStart(n){
+  n = Math.max(1, Math.min(S.numPages || 1, Math.round(+n) || 1));
+  S.partsStart = n; S.partsStartUser = true;
+  const old = S.parts;
+  if (S.lastLabels) {
+    S.skip = { ...(S.skipBase || {}) };
+    S.parts = partsFromLabels(withStart(S.lastLabels));
+  } else {                   // parts added by hand: just drop their pages before the start
+    S.parts.forEach(p => p.pages = p.pages.filter(i => i >= n - 1));
+    S.skip = S.skip || {}; for (let i = 0; i < n - 1; i++) if (!S.skip[i]) S.skip[i] = "Before parts";
+  }
+  keepNames(old);
+  S.active = S.parts[0]?.id ?? null;
+  afterAssign();
+  msg(n > 1 ? `Parts now start at page ${n}. Pages 1–${n - 1} are skipped.` : "Parts now start at page 1.");
+}
+$("parts-start").addEventListener("change", e => { if (S.pdfBytes && e.target.value) setPartsStart(e.target.value); });
+$("parts-start").addEventListener("keydown", e => { if (e.key === "Enter") e.target.blur(); });
+async function detectParts(useImages){
+  const id = S.loadId; const old = S.parts;
+  const scan = ++S.scanId; const alive = () => id === S.loadId && scan === S.scanId;
+  $("detect").disabled = true;
+  // instrument names first, so headings like "Foreword" or "Allegro" can't pose as parts; any top-left text only as a fallback
+  let labels = S.hasText && !useImages ? textLabels(S.lines) : null, how = "text", note = "";
+  if (labels) labels = markFrontMatter(labels, S.scoreLike);
+  if (labels && !labels.some(L => L && !L.skip)) labels = null;
+  if ((!labels || !labels.some(Boolean)) && S.hasText && !useImages) {
+    // a PDF with real text: don't quietly switch to the slow image reader
+    $("detect").disabled = false;
+    S.parts = []; S.active = null;
+    scanStatus("No part names were found in this PDF's text. You can add the parts by hand, or read the pages as images instead (slower).", { bad: true, action: { label: "Read pages as images", fn: () => { scanStatus("Looking for part names…"); detectParts(true); } } });
+    afterAssign(); msg("No part names found in the text.");
+    return;
+  }
+  if (!labels || !labels.some(Boolean)) {
+    const prep = await preparePages(id, alive);
+    if (!prep || !alive()) return;
+    const showPartial = (ls) => { S.parts = partsFromLabels(withStart(ls)); S.active = S.parts[0]?.id ?? null; renderParts(); renderBadges(); };
+    try { labels = await ocrLabels(alive, prep, showPartial); if (!alive()) return; how = "ocr"; if (!labels || !labels.some(Boolean)) throw new Error("nothing"); }
+    catch (e) {
+      if (!alive()) return;
+      console.warn("Text recognition unavailable", e);
+      note = "No part names could be read from the page images.";
+      labels = await layoutLabels(prep); how = "layout";
+    }
+  }
+  if (!alive()) return;
+  if (S.prep && S.prep.release) S.prep.release();   // free the extra PDF readers
+  $("detect").disabled = false;
+  S.lastLabels = labels || null; S.skipBase = { ...(S.skip || {}) };
+  S.parts = labels ? partsFromLabels(withStart(labels)) : [];
+  keepNames(old); if (typeof clearHistory === "function") clearHistory();
+  S.active = S.parts[0]?.id ?? null;
+  if (how !== "text" && !S.hasText) note = `No readable text in this PDF (${textDiagnosis()}). ${note}`.trim();
+  if (how === "layout") {
+    scanStatus(S.parts.length
+      ? `${note} Found ${plural(S.parts.length, "part")} from the page layout instead. Type each part's name from the snapshot beside it.`
+      : `${note} Add the parts by hand.`, { bad: true });
+  } else if (how === "ocr") scanStatus("This PDF has no text inside, so the part names were read from the page images. Check them below.", { info: true });
+  else scanStatus("");
+  afterAssign();
+  msg(S.parts.length ? `Found ${plural(S.parts.length, "part")}${how === "ocr" ? " on the scanned pages" : ""}. Check them in step 2.` : "No parts found. Add them in step 2.");
+}
+
+/* ---------- step 2: parts list ---------- */
+function renderParts(){
+  syncStartBox();
+  const host = $("parts-list"); host.innerHTML = "";
+  if (S.active != null && !partById(S.active)) S.active = S.parts[0]?.id ?? null;
+  if (!S.parts.length) {
+    host.innerHTML = `<div class="empty">No parts yet.<br>Use <b>Add part</b>, name it, then click its pages.</div>`;
+  }
+  S.parts.forEach((p, idx) => {
+    const d = document.createElement("div");
+    d.className = "part" + (p.id === S.active ? " active" : ""); d.dataset.id = p.id;
+    d.tabIndex = 0; d.setAttribute("role", "button"); d.setAttribute("aria-pressed", p.id === S.active);
+    d.innerHTML = `<span class="dot" style="background:${colorOf(p.id)}"></span>
+      <input type="text" class="name" id="pn-${p.id}" aria-label="Part name">
+      <button type="button" class="ghost del" aria-label="Remove part" title="Remove part">✕</button>
+      ${p.thumb ? `<img class="corner" alt="Top-left corner of page ${p.pages[0] + 1}" src="${p.thumb}">` : ""}
+      <span class="sub"><label for="pp-${p.id}">Pages</label><input type="text" id="pp-${p.id}" placeholder="e.g. 3-4" inputmode="numeric">
+      ${p.pages.length ? `<span class="pill ok">${plural(p.pages.length, "page")}</span>` : `<span class="pill warn">click its pages</span>`}</span>`;
+    const name = d.querySelector(".name"); name.value = p.label;
+    name.addEventListener("click", e => { e.stopPropagation(); setActive(p.id); });
+    name.addEventListener("input", () => { p.label = name.value; renderBadges(); renderGrid(); refreshPreviewOptions(); });
+    const pg = d.querySelector(".sub input"); pg.value = fmtRanges(p.pages);
+    pg.addEventListener("click", e => e.stopPropagation());
+    pg.addEventListener("focus", () => setActive(p.id));
+    pg.addEventListener("change", () => { p.pages = parseRanges(pg.value, S.numPages); afterAssign(); });
+    d.querySelector(".del").addEventListener("click", e => {
+      e.stopPropagation(); S.parts = S.parts.filter(x => x.id !== p.id);
+      delete S.grid[p.id];
+      afterAssign(true);
+    });
+    d.addEventListener("click", () => setActive(p.id, true));
+    d.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target === d) { e.preventDefault(); setActive(p.id, true); } });
+    host.appendChild(d);
+  });
+  const skipped = Object.keys(S.skip || {}).map(Number).filter(i => !S.parts.some(p => p.pages.includes(i)));
+  const skipNote = skipped.length ? ` Skipped ${plural(skipped.length, "page")} that aren't individual parts (p. ${fmtRanges(skipped)}: title, notes, score).` : "";
+  $("parts-hint").textContent = S.parts.length
+    ? `Found ${plural(S.parts.length, "part")}, one copy each.${skipNote} Click any page to see it larger. To change a part's pages, select the part, then use the + / ✓ button on a page's corner (shift-click selects a run), or the part buttons in the large view. Click a name to rename it.`
+    : "Add each part, then use the + button on its pages. Click any page to see it larger.";
+}
+function setActive(id, scroll){
+  if (S.active !== id) {
+    S.active = id; S.lastClick = null;
+    document.querySelectorAll(".part").forEach(el => { const on = +el.dataset.id === id; el.classList.toggle("active", on); el.setAttribute("aria-pressed", on); });
+    renderBadges();
+  }
+  if (scroll) {
+    const first = partById(id)?.pages[0]; const t = first != null && document.querySelector(`.thumb[data-i="${first}"]`);
+    if (t) { const w = t.closest(".thumbs-wrap"); w.scrollTo({ top: t.offsetTop - w.offsetTop - 12, behavior: "smooth" }); }
+  }
+}
+function afterAssign(rebuildList){
+  if (rebuildList !== false) renderParts();
+  renderBadges(); renderGrid(); refreshPreviewOptions(); refreshSteps(); schedulePreview();
+}
+$("add-part").addEventListener("click", () => {
+  const p = { id: S.nextId++, label: `Part ${S.parts.length + 1}`, pages: [] };
+  S.parts.push(p); S.active = p.id; afterAssign();
+  const inp = $("pn-" + p.id); if (inp) { inp.focus(); inp.select(); }
+});
+$("detect").addEventListener("click", () => { if (S.pdfBytes) { scanStatus("Looking for part names…"); detectParts(); } });
+
+/* ---------- thumbnails ---------- */
+let thumbObserver = null, renderQueue = [], rendering = false;
+function buildThumbs(){
+  const host = $("thumbs"); host.innerHTML = "";
+  if (thumbObserver) thumbObserver.disconnect();
+  renderQueue = [];
+  thumbObserver = new IntersectionObserver(entries => {
+    entries.forEach(en => { if (en.isIntersecting) { thumbObserver.unobserve(en.target); renderQueue.push(+en.target.dataset.i); } });
+    pump();
+  }, { root: host.parentElement, rootMargin: "300px" });
+  for (let i = 0; i < S.numPages; i++) {
+    const t = document.createElement("div");
+    t.className = "thumb"; t.dataset.i = i;
+    t.innerHTML = `<button type="button" class="view"><span class="sheet" style="--ar:${S.pageAR[i] || 0.773}"><canvas></canvas></span></button>
+      <button type="button" class="pick" aria-pressed="false"></button>
+      <span class="pg">p. ${i + 1}</span><span class="tags"></span>`;
+    t.querySelector(".view").addEventListener("click", () => openDetail(i));
+    t.querySelector(".pick").addEventListener("click", e => onPick(i, e.shiftKey));
+    host.appendChild(t); thumbObserver.observe(t);
+  }
+}
+async function pump(){
+  if (rendering) return; rendering = true; const id = S.loadId;
+  while (renderQueue.length && id === S.loadId) {
+    const i = renderQueue.shift();
+    try {
+      const page = await S.jsDoc.getPage(i + 1);
+      const vp0 = page.getViewport({ scale: 1 });
+      const vp = page.getViewport({ scale: 200 / vp0.width });
+      const c = document.querySelector(`.thumb[data-i="${i}"] canvas`); if (!c) continue;
+      c.width = Math.round(vp.width); c.height = Math.round(vp.height);
+      await page.render({ canvasContext: c.getContext("2d"), viewport: vp }).promise;
+    } catch (e) { /* leave blank */ }
+  }
+  rendering = false;
+}
+function renderBadges(){
+  const byPage = {};
+  S.parts.forEach(p => p.pages.forEach(i => (byPage[i] = byPage[i] || []).push(p)));
+  const ap = partById(S.active); const act = new Set(ap?.pages || []);
+  $("thumbs").classList.toggle("no-active", !ap);
+  document.querySelectorAll(".thumb").forEach(t => {
+    const i = +t.dataset.i; const ps = byPage[i] || [];
+    t.querySelector(".tags").innerHTML = (S.skip && S.skip[i] && !ps.length ? `<span class="tag skip">${S.skip[i]}</span>` : "") + ps.map(p => `<span class="tag" style="background:${colorOf(p.id)}" title="${esc(p.label)}">${esc(p.label)}</span>`).join("");
+    t.classList.toggle("in-active", act.has(i));
+    t.classList.toggle("viewing", S.view === i);
+    t.querySelector(".view").setAttribute("aria-label", `View page ${i + 1} larger${ps.length ? " (in " + ps.map(p => p.label).join(", ") + ")" : ""}`);
+    const pick = t.querySelector(".pick");
+    pick.setAttribute("aria-pressed", act.has(i));
+    pick.textContent = act.has(i) ? "✓" : "+";
+    pick.title = ap ? (act.has(i) ? `Remove page ${i + 1} from ${ap.label}` : `Add page ${i + 1} to ${ap.label}`) : "";
+    pick.setAttribute("aria-label", pick.title || `Page ${i + 1}`);
+  });
+  renderDetailChips();
+}
+function onPick(i, shift){
+  const p = partById(S.active);
+  if (!p) { msg("Select a part on the left (or add one) first."); return; }
+  const set = new Set(p.pages);
+  if (shift && S.lastClick != null) { const a = Math.min(S.lastClick, i), b = Math.max(S.lastClick, i); for (let k = a; k <= b; k++) set.add(k); }
+  else if (set.has(i)) set.delete(i); else set.add(i);
+  S.lastClick = i; p.pages = [...set].sort((x, y) => x - y);
+  afterAssign();
+}
+
+/* ---------- large page view ---------- */
+S.view = null; S.zoom = false;
+function openDetail(i){
+  S.view = Math.max(0, Math.min(S.numPages - 1, i));
+  $("detail").hidden = false; $("parts-grid").classList.add("has-detail");
+  renderBadges(); renderDetail();
+  const t = document.querySelector(`.thumb[data-i="${S.view}"]`);
+  if (t) { const w = t.closest(".thumbs-wrap"); const top = t.offsetTop - w.offsetTop; if (top < w.scrollTop || top + t.offsetHeight > w.scrollTop + w.clientHeight) w.scrollTo({ top: top - 12, behavior: "smooth" }); }
+}
+function closeDetail(){
+  const was = S.view; S.view = null;
+  $("detail").hidden = true; $("parts-grid").classList.remove("has-detail");
+  renderBadges();
+  const b = was != null && document.querySelector(`.thumb[data-i="${was}"] .view`); if (b) b.focus({ preventScroll: true });
+}
+function renderDetailChips(){
+  const host = $("d-chips"); if (!host || S.view == null) return;
+  const i = S.view;
+  host.innerHTML = S.parts.length ? "" : `<span class="hint">No parts yet. Use Add part first.</span>`;
+  S.parts.forEach(p => {
+    const on = p.pages.includes(i);
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.setAttribute("aria-pressed", on);
+    b.innerHTML = `<span class="dot" style="background:${colorOf(p.id)}"></span><span></span>`;
+    b.lastChild.textContent = p.label;
+    b.title = on ? `Remove page ${i + 1} from ${p.label}` : `Add page ${i + 1} to ${p.label}`;
+    b.addEventListener("click", () => {
+      p.pages = on ? p.pages.filter(x => x !== i) : [...p.pages, i].sort((x, y) => x - y);
+      afterAssign();
+      const again = [...$("d-chips").children].find(c => c.lastChild && c.lastChild.textContent === p.label); if (again) again.focus();
+    });
+    host.appendChild(b);
+  });
+}
+let detailTok = 0;
+async function renderDetail(){
+  if (S.view == null || !S.jsDoc) return;
+  const i = S.view, tok = ++detailTok;
+  $("d-title").textContent = `Page ${i + 1} of ${S.numPages}`;
+  $("d-prev").disabled = i <= 0; $("d-next").disabled = i >= S.numPages - 1;
+  $("d-zoom").textContent = S.zoom ? "Fit width" : "Zoom in"; $("d-zoom").setAttribute("aria-pressed", S.zoom);
+  renderDetailChips();
+  try {
+    const page = await S.jsDoc.getPage(i + 1);
+    if (tok !== detailTok) return;
+    const stage = $("d-stage"); const vp0 = page.getViewport({ scale: 1 });
+    const cssW = Math.max(200, stage.clientWidth - 24) * (S.zoom ? 2 : 1);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const vp = page.getViewport({ scale: cssW * dpr / vp0.width });
+    const off = document.createElement("canvas"); off.width = Math.round(vp.width); off.height = Math.round(vp.height);
+    await page.render({ canvasContext: off.getContext("2d"), viewport: vp }).promise;
+    if (tok !== detailTok) return;
+    const c = $("d-canvas"); c.width = off.width; c.height = off.height; c.style.width = cssW + "px";
+    c.getContext("2d").drawImage(off, 0, 0);
+    c.setAttribute("aria-label", `Page ${i + 1} of the PDF`);
+  } catch (e) { console.error(e); }
+}
+$("d-prev").addEventListener("click", () => openDetail(S.view - 1));
+$("d-next").addEventListener("click", () => openDetail(S.view + 1));
+$("d-close").addEventListener("click", closeDetail);
+$("d-zoom").addEventListener("click", () => { S.zoom = !S.zoom; $("d-stage").scrollTop = 0; $("d-stage").scrollLeft = 0; renderDetail(); });
+document.addEventListener("keydown", e => {
+  if (S.view == null || e.altKey || e.ctrlKey || e.metaKey) return;
+  if (e.target.closest && e.target.closest("input, select, textarea")) return;
+  if (e.key === "ArrowRight") { if (S.view < S.numPages - 1) { e.preventDefault(); openDetail(S.view + 1); } }
+  else if (e.key === "ArrowLeft") { if (S.view > 0) { e.preventDefault(); openDetail(S.view - 1); } }
+  else if (e.key === "Escape") { e.preventDefault(); closeDetail(); }
+});
+window.addEventListener("resize", debounce(() => { if (S.view != null) renderDetail(); }, 200));
+
+/* ---------- step 1: loading the PDF ---------- */
+// Several PDFs (parts already split into files): combined in file-name order, remembering where each file starts.
+async function loadPdfFiles(files){
+  if (files.length === 1) return loadPdf(new Uint8Array(await files[0].arrayBuffer()), files[0].name, false);
+  files = [...files].sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" }));
+  const id = ++S.loadId;
+  try {
+    const { PDFDocument } = PDFLib, merged = await PDFDocument.create(), info = [];
+    const labels = fileLabels(files.map(f => f.name));
+    for (let k = 0; k < files.length; k++) {
+      if (id !== S.loadId) return;
+      msg(`Combining ${files.length} PDFs: ${k + 1} of ${files.length} (${files[k].name})…`);
+      const src = await PDFDocument.load(new Uint8Array(await files[k].arrayBuffer()), { ignoreEncryption: true, updateMetadata: false, parseSpeed: PDFLib.ParseSpeeds.Fastest });
+      const pages = await merged.copyPages(src, src.getPageIndices());
+      info.push({ name: files[k].name, label: labels[k], start: merged.getPageCount(), count: pages.length });
+      pages.forEach(p => merged.addPage(p));
+    }
+    const bytes = await merged.save();
+    if (id !== S.loadId) return;
+    const common = commonName(files.map(f => f.name));
+    await loadPdf(bytes, `${common || "Combined parts"}.pdf`, false, info);
+  } catch (e) { console.error(e); msg("Those PDFs couldn't be combined. Check that each one opens normally, then try again."); }
+}
+// "Still Still Still - Flute.pdf", "Still Still Still - Oboe.pdf" -> "Flute", "Oboe" (words every name shares are dropped)
+function fileLabels(names){
+  const words = names.map(n => n.replace(/\.pdf$/i, "").replace(/_+/g, " ").replace(/\s*[-–—]\s*/g, " - ").trim().split(/\s+/));
+  let pre = 0, suf = 0;
+  if (names.length > 1) {
+    while (words.every(w => w.length > pre + 1 && w[pre].toLowerCase() === words[0][pre].toLowerCase())) pre++;
+    while (words.every(w => w.length > pre + suf + 1 && w[w.length - 1 - suf].toLowerCase() === words[0][words[0].length - 1 - suf].toLowerCase())) suf++;
+  }
+  return words.map(w => w.slice(pre, w.length - suf).join(" ").replace(/^[\s\-–—.,:]+|[\s\-–—.,:]+$/g, "").replace(/^\d{1,3}[\s.)_-]+(?=\D)/, "").trim() || w.join(" "));
+}
+function commonName(names){
+  if (names.length < 2) return "";
+  const w = names.map(n => n.replace(/\.pdf$/i, "").replace(/_+/g, " ").trim().split(/\s+/));
+  let i = 0; while (w.every(x => x[i] && x[i].toLowerCase() === w[0][i].toLowerCase())) i++;   // whole words every name shares
+  return w[0].slice(0, i).join(" ").replace(/[\s\-–—_.,:]+$/, "").trim();
+}
+const isFileStart = (i) => !!(S.files && S.files.length > 1 && S.files.some(f => f.start === i));
+async function loadPdf(bytes, name, isSample, files){
+  const id = ++S.loadId;
+  msg("Reading PDF…");
+  try {
+    const js = await pdfjsLib.getDocument({ data: bytes.slice(), ...PDFJS_OPTS }).promise;
+    if (id !== S.loadId) return;
+    S.pdfBytes = bytes; S.pdfName = name; S.isSample = !!isSample; S.jsDoc = js; S.libDoc = null; S.files = files || null;
+    S.numPages = js.numPages; S.pageAR = []; S.lines = []; S.fullText = []; S.scoreLike = []; S.skip = {}; S.hasText = false; S.fps = null; S.rep = null; S.lastLabels = null; S.partsStart = null; S.partsStartUser = false; S.nameStash = {};
+    if (S.prep && S.prep.release) S.prep.release(); S.prep = null;
+    S.grid = {}; S.gridRows = 6; S.parts = []; S.sel = null; if (typeof clearHistory === "function") clearHistory();
+    S.view = null; $("detail").hidden = true; $("parts-grid").classList.remove("has-detail");
+    $("sample-pill").hidden = !isSample;
+    $("pdf-title").textContent = files ? `${files.length} PDFs combined: ${files.map(f => f.name).join(", ")}` : name; $("pdf-title").className = "file-name";
+    $("pdf-sub").textContent = `${plural(S.numPages, "page")} · click or drop to replace`;
+    $("sample-line").hidden = true;
+    await readPages(id);
+    if (id !== S.loadId) return;
+    unlock("sec-parts", true);
+    buildThumbs(); afterAssign();
+    $("sec-parts").scrollIntoView({ behavior: "smooth", block: "start" });
+    scanStatus("Looking for part names…");
+    await detectParts();
+  } catch (e) {
+    console.error(e);
+    msg(/password/i.test(e && e.message) ? "This PDF is password protected. Remove the password and try again." : "That file couldn't be read as a PDF. Try downloading it again from the store.");
+  }
+}
+// Music programs often store text one letter at a time; join pieces that touch, put spaces only at real gaps.
+function joinLine(parts){
+  parts.sort((a, b) => a.x - b.x);
+  let s = "", prevEnd = null, prevFs = 0;
+  for (const p of parts) {
+    if (prevEnd != null) {
+      const gap = p.x - prevEnd, fs = Math.max(prevFs, p.fs, 1);
+      if (gap > fs * 0.2 && !/\s$/.test(s) && !/^\s/.test(p.s)) s += " ";
+    }
+    s += p.s; prevEnd = p.x + (p.w || 0); prevFs = p.fs;
+  }
+  // last resort for letters spaced out even so: "F l u t e" -> "Flute"
+  return s.replace(/\s+/g, " ").trim().replace(/\b(?:[A-Za-z] ){2,}[A-Za-z]\b/g, m => m.replace(/ /g, ""));
+}
+function groupLines(items){
+  const raw = [];
+  for (const it of items) {
+    const tol = Math.max(3, it.fs * 0.4);
+    const l = raw.find(l => Math.abs(l.y - it.y) < tol);
+    if (l) l.parts.push(it); else raw.push({ y: it.y, parts: [it] });
+  }
+  return raw.sort((a, b) => a.y - b.y).map(l => ({ y: l.y, x: Math.min(...l.parts.map(p => p.x)), text: joinLine(l.parts) }));
+}
+async function readPages(id){
+  let any = false; const stats = { pieces: 0, letters: 0, errors: 0, firstError: "" };
+  for (let i = 1; i <= S.numPages; i++) {
+    if (id !== S.loadId) return;
+    if (i === 1 || i % 5 === 0) msg(`Reading the text on page ${i} of ${S.numPages}…`);
+    let lines = [], full = "", scoreish = false;
+    try {
+      const p = await S.jsDoc.getPage(i); const vp = p.getViewport({ scale: 1 });
+      S.pageAR.push(vp.width / vp.height);
+      const tc = await p.getTextContent();
+      const items = tc.items.filter(it => it.str && it.str.trim()).map(it => {
+        const [x, y] = vp.convertToViewportPoint(it.transform[4], it.transform[5]);
+        return { s: it.str, x, y, w: it.width || 0, fs: Math.hypot(it.transform[2], it.transform[3]) || it.height || 10 };
+      });
+      stats.pieces += items.length;
+      const withLetters = items.filter(it => /\p{L}/u.test(it.s)).length;
+      stats.letters += withLetters;
+      if (withLetters) any = true;
+      items.sort((a, b) => a.y - b.y || a.x - b.x);
+      full = items.map(it => it.s).join("").replace(/\s+/g, " ").trim();
+      // top-left corner: top quarter of the page, left 55%; lines must start near the left margin
+      lines = groupLines(items.filter(it => it.y < vp.height * 0.25 && it.x < vp.width * 0.55))
+        .filter(l => l.x < vp.width * 0.35)
+        .map(l => l.text)
+        .filter(t => /[a-z]/i.test(t) && t.length <= 60);
+      // instrument names down the left margin of the whole page (how a full score labels its staves)
+      const margin = groupLines(items.filter(it => it.x < vp.width * 0.22)).flatMap(l => phrasesIn(l.text));
+      scoreish = looksLikeScore(margin, 3);
+    } catch (e) {
+      if (S.pageAR.length < i) S.pageAR.push(0.773);
+      stats.errors++; if (!stats.firstError) stats.firstError = String((e && e.message) || e).slice(0, 140);
+      console.warn(`Couldn't read the text on page ${i}`, e);
+    }
+    S.lines.push(lines); S.fullText.push(full); S.scoreLike.push(scoreish);
+  }
+  S.hasText = any; S.textStats = stats;
+}
+// Plain-language summary of what the text check found, shown when a PDF is treated as having no text.
+function textDiagnosis(){
+  const s = S.textStats || {};
+  if (s.errors) return `the text couldn't be read on ${plural(s.errors, "page")} (${s.firstError || "unknown error"})`;
+  if (s.pieces) return `${plural(s.pieces, "bit")} of text were found but none contain letters, so the words are probably drawn as shapes`;
+  return "the pages contain no text at all, so it's probably a scan";
+}
+/* ---------- step 3: names grid ---------- */
+// One column per part (in step 2's order), one performer per row. Typed or pasted from any spreadsheet.
+S.grid = {}; S.gridRows = 6;
+function gridCols(){ return readyParts(); }
+function gridCell(r, c){ return document.getElementById(`g-${r}-${c}`); }
+function renderGrid(focus){
+  const cols = gridCols(), t = $("grid"); if (!t) return;
+  const longest = Math.max(0, ...cols.map(p => (S.grid[p.id] || []).length));
+  S.gridRows = Math.max(S.gridRows, longest + 1, 6);
+  const head = `<thead><tr><th class="num" scope="col"><span class="sr">Row</span></th>${cols.map((p, c) =>
+    `<th scope="col" data-c="${c}" title="Click to select this column"><span class="dot" style="background:${colorOf(p.id)}"></span>${esc(p.label)}<span class="pp">${plural(p.pages.length, "page")}</span></th>`).join("")}</tr></thead>`;
+  let body = "<tbody>";
+  for (let r = 0; r < S.gridRows; r++) {
+    body += `<tr><td class="num" data-r="${r}" title="Click to select this row">${r + 1}</td>` + cols.map((p, c) =>
+      `<td><input type="text" id="g-${r}-${c}" data-r="${r}" data-c="${c}" autocomplete="off" spellcheck="false" aria-label="${esc(p.label)}, row ${r + 1}"></td>`).join("") + "</tr>";
+  }
+  t.innerHTML = head + body + "</tbody>";
+  cols.forEach((p, c) => (S.grid[p.id] || []).forEach((v, r) => { const el = gridCell(r, c); if (el) el.value = v; }));
+  gridSummary(); if (typeof paintSel === "function") paintSel();
+  if (focus) { const el = gridCell(focus[0], focus[1]); if (el) el.focus({ preventScroll: false }); }
+}
+function addGridRow(){
+  const cols = gridCols(), r = S.gridRows++, tb = $("grid").tBodies[0]; if (!tb) return;
+  const tr = document.createElement("tr");
+  tr.innerHTML = `<td class="num" data-r="${r}" title="Click to select this row">${r + 1}</td>` + cols.map((p, c) =>
+    `<td><input type="text" id="g-${r}-${c}" data-r="${r}" data-c="${c}" autocomplete="off" spellcheck="false" aria-label="${esc(p.label)}, row ${r + 1}"></td>`).join("");
+  tb.appendChild(tr);
+}
+function setCell(p, r, v){
+  const col = S.grid[p.id] || (S.grid[p.id] = []);
+  while (col.length <= r) col.push("");
+  col[r] = v;
+  while (col.length && !String(col[col.length - 1]).trim()) col.pop();
+}
+const onGridChange = debounce(() => { refreshPreviewOptions(); refreshSteps(); schedulePreview(); }, 250);
+function gridSummary(){
+  const el = $("grid-sum"); if (!el) return;
+  const n = roster().length;
+  const empty = gridCols().filter(p => !(S.grid[p.id] || []).some(v => String(v).trim()));
+  el.textContent = n ? `${plural(n, "performer")}${empty.length && empty.length < gridCols().length ? ` · nobody yet for ${empty.length > 3 ? plural(empty.length, "part") : empty.map(p => p.label).join(", ")}` : ""}` : "";
+}
+// Clipboard text from Excel, Numbers or Google Sheets: tab-separated, with quotes around cells that hold tabs or line breaks.
+function parseClip(text){
+  text = String(text).replace(/\r\n?/g, "\n");
+  if (text.endsWith("\n")) text = text.slice(0, -1);
+  const delim = text.includes("\t") ? "\t" : null;
+  const rows = [[""]]; let q = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i], row = rows[rows.length - 1];
+    if (q) { if (ch === '"') { if (text[i + 1] === '"') { row[row.length - 1] += '"'; i++; } else q = false; } else row[row.length - 1] += ch; continue; }
+    if (ch === '"' && row[row.length - 1] === "") q = true;
+    else if (delim && ch === delim) row.push("");
+    else if (ch === "\n") rows.push([""]);
+    else row[row.length - 1] += ch;
+  }
+  return rows.map(r => r.map(c => c.replace(/\s+/g, " ").trim()));
+}
+function applyPaste(r0, c0, M){
+  const cols = gridCols(); if (!M.length) return;
+  const width = Math.max(...M.map(r => r.length));
+  const firstRow = M[0].filter(Boolean);
+  const headerHits = M[0].map(h => h ? matchPartIn(h, cols) : null);
+  // 1) a block whose first row is part names: each column goes under its part
+  if (firstRow.length && headerHits.filter(Boolean).length >= Math.max(1, Math.ceil(firstRow.length / 2))) {
+    const skipped = [];
+    headerHits.forEach((p, j) => {
+      if (!p) { if (M[0][j]) skipped.push(M[0][j]); return; }
+      S.grid[p.id] = M.slice(1).map(row => row[j] || "");
+      while (S.grid[p.id].length && !S.grid[p.id][S.grid[p.id].length - 1]) S.grid[p.id].pop();
+    });
+    renderGrid([0, Math.max(0, cols.findIndex(p => p === headerHits.find(Boolean)))]);
+    msg(`Pasted ${plural(headerHits.filter(Boolean).length, "column")} under matching part names.` + (skipped.length ? ` Not matched to a part: ${skipped.join(", ")}.` : ""));
+    return true;
+  }
+  // 2) a two-column list of names and parts (in either order)
+  if (width === 2 && M.length >= 2) {
+    for (const pc of [1, 0]) {
+      const hits = M.map(row => row[pc] ? matchPartIn(row[pc], cols) : null);
+      if (hits.filter(Boolean).length >= Math.ceil(M.length * 0.6)) {
+        let added = 0; const unknown = [];
+        M.forEach((row, k) => {
+          const p = hits[k], name = row[1 - pc];
+          if (!name) return;
+          if (!p) { if (row[pc] && !/^(part|instrument)s?$/i.test(row[pc])) unknown.push(`${name} (${row[pc]})`); return; }
+          const col = S.grid[p.id] || (S.grid[p.id] = []);
+          const at = col.findIndex(v => !String(v).trim());
+          if (at >= 0) col[at] = name; else col.push(name);
+          added++;
+        });
+        renderGrid([r0, c0]);
+        msg(`Added ${plural(added, "performer")} from a name-and-part list.` + (unknown.length ? ` Part not found for: ${unknown.slice(0, 4).join(", ")}${unknown.length > 4 ? "…" : ""}.` : ""));
+        return true;
+      }
+    }
+  }
+  // 3) anything else: drop the block in starting at the selected cell
+  let lost = 0;
+  M.forEach((row, i) => row.forEach((v, j) => { const p = cols[c0 + j]; if (p) setCell(p, r0 + i, v); else if (v) lost++; }));
+  renderGrid([r0, c0]);
+  msg(`Pasted ${plural(M.length, "row")} × ${plural(width, "column")}.` + (lost ? ` ${plural(lost, "cell")} ran past the last part and ${lost === 1 ? "was" : "were"} left out.` : ""));
+  return true;
+}
+function matchPartIn(text, cols){
+  const k = norm(text); if (!k) return null;
+  return cols.find(p => norm(p.label) === k) || cols.find(p => p.label.trim().toLowerCase() === String(text).trim().toLowerCase()) || null;
+}
+function matchPart(header){ const p = matchPartIn(header, S.parts); return p ? p.id : null; }
+/* undo / redo: snapshots of the whole grid. Typing in one cell counts as one step until you move on or pause. */
+const hist = { undo: [], redo: [], typingKey: null, typingAt: 0 };
+function gridSnapshot(){ return JSON.stringify({ g: S.grid, rows: S.gridRows }); }
+function pushHistory(){ hist.undo.push(gridSnapshot()); if (hist.undo.length > 300) hist.undo.shift(); hist.redo = []; hist.typingKey = null; undoButtons(); }
+function clearHistory(){ hist.undo = []; hist.redo = []; hist.typingKey = null; undoButtons(); }
+function noteTyping(r, c){
+  const key = `${r}:${c}`, now = Date.now();
+  if (hist.typingKey !== key || now - hist.typingAt > 1500) { hist.undo.push(gridSnapshot()); if (hist.undo.length > 300) hist.undo.shift(); hist.redo = []; }
+  hist.typingKey = key; hist.typingAt = now; undoButtons();
+}
+function restoreGrid(snap, focus){
+  const o = JSON.parse(snap); S.grid = o.g || {}; S.gridRows = o.rows || 6; hist.typingKey = null;
+  S.sel = null; renderGrid(focus); onGridChange(); undoButtons();
+}
+function gridUndo(){ if (!hist.undo.length) return; const f = activeCell(); hist.redo.push(gridSnapshot()); restoreGrid(hist.undo.pop(), f); msg("Undone."); }
+function gridRedo(){ if (!hist.redo.length) return; const f = activeCell(); hist.undo.push(gridSnapshot()); restoreGrid(hist.redo.pop(), f); msg("Redone."); }
+function undoButtons(){ const u = $("grid-undo"), r = $("grid-redo"); if (u) u.disabled = !hist.undo.length; if (r) r.disabled = !hist.redo.length; }
+function activeCell(){ const el = document.activeElement; return el && el.dataset && el.dataset.r != null && el.closest("#grid") ? [+el.dataset.r, +el.dataset.c] : null; }
+
+/* selecting several cells: drag across them, shift-click, shift+arrows, or click a column heading / row number */
+S.sel = null;    // { r0, c0, r1, c1 } anchor and far corner; null when only one cell is active
+function selRect(){ if (!S.sel) return null; const s = S.sel; return { top: Math.min(s.r0, s.r1), bottom: Math.max(s.r0, s.r1), left: Math.min(s.c0, s.c1), right: Math.max(s.c0, s.c1) }; }
+function isMulti(){ const R = selRect(); return !!R && (R.top !== R.bottom || R.left !== R.right); }
+function paintSel(){
+  document.querySelectorAll("#grid td.sel").forEach(td => td.classList.remove("sel"));
+  const R = isMulti() ? selRect() : null; $("grid").classList.toggle("has-sel", !!R);
+  if (R) for (let r = R.top; r <= R.bottom; r++) for (let c = R.left; c <= R.right; c++) { const el = gridCell(r, c); if (el) el.parentElement.classList.add("sel"); }
+  const n = R ? (R.bottom - R.top + 1) * (R.right - R.left + 1) : 0;
+  $("grid-selinfo").textContent = n ? `${plural(n, "cell")} selected · Delete clears them` : "";
+}
+function setSel(r0, c0, r1, c1){ S.sel = { r0, c0, r1, c1 }; paintSel(); }
+function clearSel(){ if (S.sel) { S.sel = null; paintSel(); } }
+function clearRange(){
+  const R = selRect(), cols = gridCols(); if (!R) return 0;
+  pushHistory(); let n = 0;
+  for (let c = R.left; c <= R.right; c++) { const p = cols[c]; if (!p) continue; for (let r = R.top; r <= R.bottom; r++) { const v = (S.grid[p.id] || [])[r]; if (v && String(v).trim()) n++; setCell(p, r, ""); } }
+  const focus = [R.top, R.left]; S.sel = null; renderGrid(focus); onGridChange();
+  return n;
+}
+function rangeText(){
+  const R = selRect(), cols = gridCols(); const lines = [];
+  for (let r = R.top; r <= R.bottom; r++) { const row = []; for (let c = R.left; c <= R.right; c++) { const p = cols[c]; row.push(p ? String((S.grid[p.id] || [])[r] || "") : ""); } lines.push(row.join("\t")); }
+  return lines.join("\n");
+}
+(function wireGrid(){
+  const t = $("grid"); let dragging = false;
+  const cellOf = (el) => el && el.dataset && el.dataset.r != null ? [+el.dataset.r, +el.dataset.c] : null;
+  t.addEventListener("mousedown", e => {
+    const th = e.target.closest("th[data-c]"), rn = e.target.closest("td.num");
+    if (th) { e.preventDefault(); const c = +th.dataset.c; const last = S.gridRows - 1; if (e.shiftKey && S.sel) setSel(0, S.sel.c0, last, c); else setSel(0, c, last, c); gridCell(0, c)?.focus({ preventScroll: true }); return; }
+    if (rn) { e.preventDefault(); const r = +rn.dataset.r, last = gridCols().length - 1; if (e.shiftKey && S.sel) setSel(S.sel.r0, 0, r, last); else setSel(r, 0, r, last); gridCell(r, 0)?.focus({ preventScroll: true }); return; }
+    const at = cellOf(e.target); if (!at) return;
+    if (e.shiftKey) { e.preventDefault(); const a = S.sel ? [S.sel.r0, S.sel.c0] : (activeCell() || at); setSel(a[0], a[1], at[0], at[1]); return; }
+    S.sel = { r0: at[0], c0: at[1], r1: at[0], c1: at[1] }; paintSel(); dragging = true;
+  });
+  t.addEventListener("mouseover", e => {
+    if (!dragging || !S.sel) return;
+    const at = cellOf(e.target) || cellOf(e.target.querySelector && e.target.querySelector("input")); if (!at) return;
+    if (at[0] !== S.sel.r1 || at[1] !== S.sel.c1) {
+      S.sel.r1 = at[0]; S.sel.c1 = at[1]; paintSel();
+      if (isMulti()) {   // selecting cells, not text: drop any text highlight in the cell where the drag began
+        t.classList.add("dragging"); window.getSelection()?.removeAllRanges();
+        const a = document.activeElement; if (a && a.closest && a.closest("#grid") && a.setSelectionRange) { const n = a.value.length; a.setSelectionRange(n, n); }
+      }
+    }
+  });
+  document.addEventListener("mouseup", () => { dragging = false; t.classList.remove("dragging"); });
+  document.addEventListener("mousedown", e => { if (!e.target.closest("#grid") && !e.target.closest(".grid-tools")) clearSel(); });
+  t.addEventListener("input", e => {
+    const at = cellOf(e.target); if (!at) return;
+    const [r, c] = at, p = gridCols()[c]; if (!p) return;
+    noteTyping(r, c);
+    setCell(p, r, e.target.value);
+    if (r === S.gridRows - 1 && e.target.value.trim()) addGridRow();
+    clearSel(); gridSummary(); onGridChange();
+  });
+  // undo and redo from the browser's own menu or right-click menu
+  t.addEventListener("beforeinput", e => {
+    if (e.inputType === "historyUndo") { e.preventDefault(); gridUndo(); }
+    else if (e.inputType === "historyRedo") { e.preventDefault(); gridRedo(); }
+  });
+  t.addEventListener("keydown", e => {
+    const el = e.target, at = cellOf(el); if (!at) return;
+    const [r, c] = at, mod = e.ctrlKey || e.metaKey, k = e.key.toLowerCase();
+    if (mod && k === "z" && !e.shiftKey) { e.preventDefault(); gridUndo(); return; }
+    if (mod && ((k === "z" && e.shiftKey) || k === "y")) { e.preventDefault(); gridRedo(); return; }
+    if (mod && k === "a" && (el.value === "" || (el.selectionStart === 0 && el.selectionEnd === el.value.length))) {   // second Ctrl+A: every cell
+      e.preventDefault(); setSel(0, 0, S.gridRows - 1, gridCols().length - 1); return;
+    }
+    if ((e.key === "Delete" || e.key === "Backspace") && isMulti()) { e.preventDefault(); const n = clearRange(); msg(n ? `Cleared ${plural(n, "name")}.` : "Nothing to clear."); return; }
+    if (e.key === "Escape" && S.sel) { clearSel(); return; }
+    if (e.shiftKey && !mod && (e.key === "ArrowUp" || e.key === "ArrowDown" ||
+        (e.key === "ArrowLeft" && (isMulti() || el.selectionStart === 0)) || (e.key === "ArrowRight" && (isMulti() || el.selectionEnd === el.value.length)))) {
+      e.preventDefault();
+      const s = S.sel && (S.sel.r0 !== undefined) ? S.sel : { r0: r, c0: c, r1: r, c1: c };
+      const dr = e.key === "ArrowDown" ? 1 : e.key === "ArrowUp" ? -1 : 0, dc = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      const nr = Math.max(0, Math.min(S.gridRows - 1, s.r1 + dr)), nc = Math.max(0, Math.min(gridCols().length - 1, s.c1 + dc));
+      setSel(s.r0, s.c0, nr, nc); return;
+    }
+    let to = null;
+    if (e.key === "Enter" || e.key === "ArrowDown") { to = [r + 1, c]; if (r + 1 >= S.gridRows) addGridRow(); }
+    else if (e.key === "ArrowUp") to = [r - 1, c];
+    else if (e.key === "ArrowLeft" && el.selectionStart === 0 && el.selectionEnd === 0) to = [r, c - 1];
+    else if (e.key === "ArrowRight" && el.selectionStart === el.value.length) to = [r, c + 1];
+    if (!to) { if (e.key.length === 1 && !mod) clearSel(); return; }
+    const next = gridCell(to[0], to[1]);
+    if (next) { e.preventDefault(); clearSel(); next.focus(); next.select(); }
+  });
+  t.addEventListener("copy", e => { if (!isMulti()) return; e.preventDefault(); e.clipboardData.setData("text/plain", rangeText()); msg("Copied the selected cells."); });
+  t.addEventListener("cut", e => { if (!isMulti()) return; e.preventDefault(); e.clipboardData.setData("text/plain", rangeText()); const n = clearRange(); msg(`Cut ${plural(n, "name")}.`); });
+  t.addEventListener("paste", e => {
+    const at = cellOf(e.target); if (!at) return;
+    const text = e.clipboardData && e.clipboardData.getData("text/plain"); if (!text) return;
+    const M = parseClip(text);
+    if (M.length === 1 && M[0].length === 1 && !isMulti()) { pushHistory(); return; }   // a single value: normal paste into the cell
+    e.preventDefault();
+    const R = isMulti() ? selRect() : null;
+    pushHistory(); S.sel = null;
+    applyPaste(R ? R.top : at[0], R ? R.left : at[1], M);
+    onGridChange();
+  });
+})();
+$("grid-undo").addEventListener("click", gridUndo);
+$("grid-redo").addEventListener("click", gridRedo);
+$("grid-add").addEventListener("click", () => { addGridRow(); const el = gridCell(S.gridRows - 1, 0); if (el) el.focus(); });
+let gridClearArmed = null;
+$("grid-clear").addEventListener("click", e => {
+  const b = e.currentTarget;
+  if (!gridClearArmed) { b.textContent = "Click again to clear all names"; gridClearArmed = setTimeout(() => { b.textContent = "Clear names"; gridClearArmed = null; }, 3000); return; }
+  clearTimeout(gridClearArmed); gridClearArmed = null; b.textContent = "Clear names";
+  pushHistory(); S.grid = {}; S.gridRows = 6; S.sel = null; renderGrid(); onGridChange(); msg("Names cleared. Undo brings them back.");
+});
+$("sample-names").addEventListener("click", () => {
+  pushHistory();
+  const byLabel = { "Flute": ["Maya Ortiz"], "Clarinet in Bb 1": ["Theo Brandt", "Priya Nair"], "Clarinet in Bb 2": ["Sam Whitfield"], "Alto Saxophone": ["Jordan Lee"],
+    "Trumpet in Bb": ["Ana Kovač", "Ben Ruiz"], "Trombone": ["Elise Martin"], "Percussion": ["Kai Nakamura"] };
+  gridCols().forEach(p => { const names = byLabel[p.label] || byLabel[p.label.replace(/♭/g, "b")]; if (names) S.grid[p.id] = [...names]; });
+  renderGrid(); onGridChange();
+  msg(`Filled in ${plural(roster().length, "made-up performer")}.`);
+});
+
+/* ---------- stamping (shared by preview and build) ---------- */
+function hexRgb(hex){
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex || ""); const n = m ? parseInt(m[1], 16) : 0;
+  return PDFLib.rgb(((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255);
+}
+function angleOf(page){ return (((page.getRotation().angle || 0) % 360) + 360) % 360; }
+async function stampPage(doc, page, text, font){
+  const { rgb, degrees } = PDFLib; const st = S.settings; const size = st.size;
+  text = String(text).trim(); if (!text) return;
+  const cb = page.getCropBox(); const r = angleOf(page);
+  const W = cb.width, H = cb.height, VW = r % 180 ? H : W, VH = r % 180 ? W : H;
+  const map = (vx, vy) => r === 90 ? [cb.x + W - vy, cb.y + vx] : r === 180 ? [cb.x + W - vx, cb.y + H - vy] : r === 270 ? [cb.x + vy, cb.y + H - vx] : [cb.x + vx, cb.y + vy];
+  let tw, img = null, imgH = 0;
+  try { tw = font.widthOfTextAtSize(text, size); }
+  catch (e) { // characters outside the standard PDF fonts: draw the name as a crisp image instead
+    const k = 6, c = document.createElement("canvas"), cx = c.getContext("2d");
+    const css = `${st.font === "serif-italic" ? "italic " : ""}bold ${size * k}px ${st.font === "sans" ? "Helvetica, Arial, sans-serif" : "'Times New Roman', Times, serif"}`;
+    cx.font = css; const w = Math.ceil(cx.measureText(text).width) + 4;
+    c.width = w; c.height = Math.ceil(size * k * 1.3);
+    cx.font = css; cx.fillStyle = st.color || "#000000"; cx.textBaseline = "alphabetic"; cx.fillText(text, 2, size * k * 1.02);
+    const png = await new Promise(res => c.toBlob(b => b.arrayBuffer().then(res), "image/png"));
+    img = await doc.embedPng(png); tw = w / k; imgH = c.height / k;
+  }
+  const pad = st.box ? Math.max(3, size * 0.3) : 0;
+  const vx = st.pos === "left" ? st.side : st.pos === "center" ? (VW - tw) / 2 : VW - st.side - tw;
+  const vy = VH - st.offset - size * 0.72;            // baseline; tops of capitals sit at the chosen distance
+  const rot = degrees(r);
+  if (st.box) { const [x, y] = map(vx - pad, vy - size * 0.24 - pad); page.drawRectangle({ x, y, width: tw + pad * 2, height: size * 0.98 + pad * 2, color: rgb(1, 1, 1), rotate: rot }); }
+  if (img) { const [x, y] = map(vx, vy - (imgH - size * 1.02)); page.drawImage(img, { x, y, width: tw, height: imgH, rotate: rot }); }
+  else { const [x, y] = map(vx, vy); page.drawText(text, { x, y, size, font, color: hexRgb(st.color), rotate: rot }); }
+}
+async function getLibDoc(){
+  if (!S.libDoc) S.libDoc = await PDFLib.PDFDocument.load(S.pdfBytes, { ignoreEncryption: true, updateMetadata: false, parseSpeed: PDFLib.ParseSpeeds.Fastest });
+  return S.libDoc;
+}
+async function buildDoc(perfs, firstPageOnly){
+  const { PDFDocument, StandardFonts, degrees } = PDFLib; const st = S.settings;
+  const src = await getLibDoc();
+  const out = await PDFDocument.create();
+  const font = await out.embedFont(st.font === "sans" ? StandardFonts.HelveticaBold : st.font === "serif" ? StandardFonts.TimesRomanBold : StandardFonts.TimesRomanBoldItalic);
+  const cache = new Map(); let mode = "embed";
+  for (const perf of perfs) {
+    let pages = partById(perf.partId)?.pages || []; if (!pages.length) continue;
+    if (firstPageOnly) pages = pages.slice(0, 1);
+    let last = null;
+    for (let k = 0; k < pages.length; k++) {
+      const idx = pages[k]; let page = null;
+      if (mode === "embed") {   // each source page is stored once and reused, which keeps big scanned files small
+        try {
+          const sp = src.getPage(idx), mb = sp.getMediaBox();
+          let emb = cache.get(idx);
+          if (!emb) { emb = await out.embedPage(sp, { left: mb.x, bottom: mb.y, right: mb.x + mb.width, top: mb.y + mb.height }); cache.set(idx, emb); }
+          page = out.addPage([mb.width, mb.height]);
+          page.drawPage(emb, { x: 0, y: 0, width: mb.width, height: mb.height });
+          const cb = sp.getCropBox();
+          page.setCropBox(cb.x - mb.x, cb.y - mb.y, cb.width, cb.height);
+          const r = angleOf(sp); if (r) page.setRotation(degrees(r));
+        } catch (e) { console.warn("Falling back to page copies", e); mode = "copy"; if (page) out.removePage(out.getPageCount() - 1); page = null; }
+      }
+      if (!page) { const [cp] = await out.copyPages(src, [idx]); page = out.addPage(cp); }
+      if (k === 0 || st.every) await stampPage(out, page, perf.name, font);
+      last = page;
+    }
+    if (!firstPageOnly && st.duplex && pages.length % 2 === 1 && last) {
+      const { width, height } = last.getSize(); const b = out.addPage([width, height]);
+      const r = angleOf(last); if (r) b.setRotation(degrees(r));
+    }
+  }
+  return out;
+}
+function orderedPerformers(){
+  const list = roster().filter(r => partById(r.partId)?.pages.length);
+  if (S.settings.order === "alpha") {
+    const key = n => { const w = n.trim().split(/\s+/); return (w.length > 1 ? w[w.length - 1] + " " : "") + n; };
+    return [...list].sort((a, b) => key(a.name).localeCompare(key(b.name)));
+  }
+  if (S.settings.order === "score") {
+    const first = r => partById(r.partId).pages[0];
+    return [...list].sort((a, b) => first(a) - first(b) || a.ci - b.ci || a.ri - b.ri);
+  }
+  return list;   // column by column, top to bottom
+}
+
+/* ---------- preview ---------- */
+function refreshPreviewOptions(){
+  const sel = $("preview-who"); const prev = sel.value;
+  const list = orderedPerformers();
+  sel.innerHTML = list.map(r => `<option value="${r.ci}:${r.ri}">${esc(r.name)} · ${esc(partById(r.partId).label)}</option>`).join("") || `<option value="">No one to preview yet</option>`;
+  if (list.some(r => `${r.ci}:${r.ri}` === prev)) sel.value = prev;
+}
+let previewToken = 0;
+const schedulePreview = debounce(renderPreview, 180);
+async function renderPreview(){
+  const tok = ++previewToken; const sel = $("preview-who"); const c = $("preview-canvas");
+  if ($("sec-stamp").classList.contains("locked")) return;
+  const r = orderedPerformers().find(x => `${x.ci}:${x.ri}` === sel.value);
+  if (!r || !window.PDFLib) { c.width = 10; c.height = 10; $("preview-note").textContent = "Upload names to see a preview."; return; }
+  try {
+    const bytes = await (await buildDoc([r], true)).save();
+    if (tok !== previewToken) return;
+    const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+    const page = await pdf.getPage(1);
+    const vp0 = page.getViewport({ scale: 1 });
+    const stageW = Math.max(160, Math.min(410, c.parentElement.clientWidth - 28));
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    const vp = page.getViewport({ scale: (stageW * dpr) / vp0.width });
+    const off = document.createElement("canvas"); off.width = Math.round(vp.width); off.height = Math.round(vp.height);
+    await page.render({ canvasContext: off.getContext("2d"), viewport: vp }).promise;
+    if (tok !== previewToken) return;
+    c.width = off.width; c.height = off.height; c.style.width = stageW + "px";
+    c.getContext("2d").drawImage(off, 0, 0);
+    pdf.destroy();
+    const p = partById(r.partId);
+    $("preview-note").textContent = `First page of ${r.name}'s copy (${p.label}, ${plural(p.pages.length, "page")}).`;
+  } catch (e) { console.error(e); $("preview-note").textContent = "The preview couldn't be drawn for this PDF."; }
+}
+
+/* ---------- summary & build ---------- */
+function updateSummary(){
+  const el = $("summary"); const ready = orderedPerformers();
+  let pages = 0;
+  ready.forEach(r => { const n = partById(r.partId).pages.length; pages += n + (S.settings.duplex && n % 2 ? 1 : 0); });
+  if (!S.pdfBytes) el.textContent = "Start by uploading the parts PDF.";
+  else if (!readyParts().length) el.textContent = "Step 2: give at least one part its pages.";
+  else if (!ready.length) el.textContent = "Step 3: type or paste performer names under their parts.";
+  else el.innerHTML = `<b>${ready.length}</b> named ${ready.length === 1 ? "copy" : "copies"} · <b>${pages}</b> pages to print`;
+  $("build").disabled = !ready.length || !window.PDFLib || $("sec-stamp").classList.contains("locked");
+}
+async function build(){
+  const btn = $("build"); const list = orderedPerformers(); if (!list.length) return;
+  btn.disabled = true; btn.innerHTML = `<span class="spin" aria-hidden="true"></span> Building…`;
+  try {
+    const doc = await buildDoc(list, false);
+    const bytes = await doc.save();
+    const base = (S.pdfName || "parts").replace(/\.pdf$/i, "");
+    await deliver(`${base} - named copies.pdf`, bytes, `${plural(list.length, "copy", "copies")}, ${plural(doc.getPageCount(), "page")}, ${(bytes.length / 1048576).toFixed(1)} MB`, "application/pdf");
+  } catch (e) { console.error(e); msg("The PDF couldn't be built. If the file is copy-protected, that may block it."); }
+  btn.innerHTML = "Build printable PDF"; updateSummary();
+}
+let downloadsCap;
+async function deliver(filename, data, desc, type){
+  if (downloadsCap === undefined) { try { downloadsCap = window.claude && claude.use ? await claude.use("downloads") : null; } catch (e) { downloadsCap = null; } }
+  const blob = new Blob([data], { type });
+  if (downloadsCap) {
+    try { await downloadsCap.save({ filename, data: blob }); msg(`Saved “${filename}” (${desc}).`); return; }
+    catch (e) {
+      if (e && e.code === "declined") { msg("Save cancelled."); return; }
+      if (e && e.code === "rate_limited") { msg("A save prompt is already open. Finish it first."); return; }
+    }
+  }
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+  msg(`Saved “${filename}” (${desc}).`);
+}
+
+/* ---------- sample score (made up, generated on the fly) ---------- */
+async function makeSample(){
+  const { PDFDocument, StandardFonts, rgb } = PDFLib;
+  const doc = await PDFDocument.create();
+  const bold = await doc.embedFont(StandardFonts.TimesRomanBold), reg = await doc.embedFont(StandardFonts.TimesRoman), ital = await doc.embedFont(StandardFonts.TimesRomanItalic);
+  const parts = [["Flute", 1, 2], ["Clarinet in Bb 1", 2, 3], ["Clarinet in Bb 2", 2, 2], ["Alto Saxophone", 1, 2], ["Trumpet in Bb", 2, 2], ["Trombone", 1, 2], ["Percussion", 2, 1]];
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const ink = rgb(0.1, 0.1, 0.12);
+  const art = parts.map(([, len]) => Array.from({ length: len }, () => Array.from({ length: 10 }, () => Array.from({ length: 14 }, () => Math.floor(rnd() * 9)))));
+  parts.forEach(([name, len, copies], pi) => {
+    for (let c = 0; c < copies; c++) for (let pgi = 0; pgi < len; pgi++) {
+      const p = doc.addPage([612, 792]);
+      if (pgi === 0) {
+        p.drawText("Riverbend Overture", { x: 306 - bold.widthOfTextAtSize("Riverbend Overture", 22) / 2, y: 728, size: 22, font: bold, color: ink });
+        p.drawText(name, { x: 54, y: 700, size: 13, font: bold, color: ink });
+        p.drawText("A. N. Example", { x: 558 - ital.widthOfTextAtSize("A. N. Example", 11), y: 700, size: 11, font: ital, color: ink });
+      } else {
+        p.drawText(`${name}  ·  Riverbend Overture`, { x: 54, y: 748, size: 10, font: ital, color: ink });
+        p.drawText(String(pgi + 1), { x: 552, y: 748, size: 10, font: reg, color: ink });
+      }
+      const top = pgi === 0 ? 670 : 724;
+      art[pi][pgi].forEach((notes, s) => {
+        const y0 = top - s * 62; if (y0 < 70) return;
+        for (let l = 0; l < 5; l++) p.drawLine({ start: { x: 54, y: y0 - l * 7 }, end: { x: 558, y: y0 - l * 7 }, thickness: 0.6, color: ink });
+        [54, 180, 306, 432, 558].forEach(x => p.drawLine({ start: { x, y: y0 }, end: { x, y: y0 - 28 }, thickness: 0.8, color: ink }));
+        notes.forEach((n, k) => {
+          const x = 80 + k * 34 + (k > 3 ? 10 : 0) + (k > 7 ? 10 : 0) + (k > 10 ? 6 : 0); if (x > 545) return;
+          const y = y0 - 28 + n * 3.5;
+          p.drawEllipse({ x, y, xScale: 4.2, yScale: 3, color: ink });
+          p.drawLine({ start: { x: x + 3.8, y }, end: { x: x + 3.8, y: y + 21 }, thickness: 0.8, color: ink });
+        });
+      });
+      p.drawText("Sample score for trying out Part Stamp", { x: 54, y: 36, size: 8, font: ital, color: rgb(0.45, 0.45, 0.5) });
+    }
+  });
+  return await doc.save();
+}
+
+/* ---------- controls wiring ---------- */
+function syncControls(){
+  const st = S.settings;
+  $("pos-seg").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === st.pos));
+  $("size").value = st.size; $("size-out").textContent = `${st.size} pt`;
+  $("offset").value = st.offset; $("offset-out").textContent = `${(st.offset / 72).toFixed(2)} in`;
+  $("side").value = st.side; $("side-out").textContent = `${(st.side / 72).toFixed(2)} in`;
+  $("side").disabled = st.pos === "center";
+  const preset = [...$("color-swatches").querySelectorAll("button")].find(b => b.dataset.color.toLowerCase() === (st.color || "").toLowerCase());
+  $("color-swatches").querySelectorAll("button").forEach(b => b.setAttribute("aria-checked", b === preset));
+  $("color-custom").value = preset ? (st.customColor || "#7a7f87") : (st.color || "#000000"); $("color-custom").parentElement.classList.toggle("on", !preset);
+  $("font").value = st.font; $("box").checked = st.box; $("every").checked = st.every; $("order").value = st.order; $("duplex").checked = st.duplex;
+}
+function setSetting(k, v){ S.settings[k] = v; saveSettings(); syncControls(); updateSummary(); if (k === "order") refreshPreviewOptions(); schedulePreview(); }
+$("pos-seg").addEventListener("click", e => { const b = e.target.closest("button"); if (b) setSetting("pos", b.dataset.v); });
+["size", "offset", "side"].forEach(id => $(id).addEventListener("input", e => setSetting(id, +e.target.value)));
+$("font").addEventListener("change", e => setSetting("font", e.target.value));
+$("color-swatches").addEventListener("click", e => { const b = e.target.closest("button[data-color]"); if (b) setSetting("color", b.dataset.color); });
+$("color-custom").addEventListener("input", e => { S.settings.customColor = e.target.value; setSetting("color", e.target.value); });
+$("order").addEventListener("change", e => setSetting("order", e.target.value));
+["box", "every", "duplex"].forEach(id => $(id).addEventListener("change", e => setSetting(id, e.target.checked)));
+$("preview-who").addEventListener("change", schedulePreview);
+$("build").addEventListener("click", build);
+$("pdf-input").addEventListener("change", async e => { const fs = [...e.target.files]; e.target.value = ""; if (fs.length) await loadPdfFiles(fs); });
+$("try-sample").addEventListener("click", async () => {
+  if (!window.PDFLib) return;
+  try { const bytes = await makeSample(); await loadPdf(new Uint8Array(bytes), "Riverbend Overture (sample).pdf", true); }
+  catch (e) { console.error(e); msg("The sample score couldn't be made. Upload your own PDF instead."); }
+});
+// drag & drop: PDFs go to step 1
+document.addEventListener("dragover", e => { if ([...(e.dataTransfer?.types || [])].includes("Files")) e.preventDefault(); });
+["pdf-drop"].forEach(id => {
+  const z = $(id);
+  z.addEventListener("dragenter", () => z.classList.add("over"));
+  z.addEventListener("dragleave", e => { if (!z.contains(e.relatedTarget)) z.classList.remove("over"); });
+  z.addEventListener("drop", () => z.classList.remove("over"));
+});
+document.addEventListener("drop", async e => {
+  const files = [...(e.dataTransfer?.files || [])]; if (!files.length) return; e.preventDefault();
+  const pdfs = files.filter(f => /\.pdf$/i.test(f.name) || f.type === "application/pdf");
+  if (pdfs.length) await loadPdfFiles(pdfs);
+  else msg(`${files[0].name} isn't a PDF. To add names, copy them from your spreadsheet and paste them into the grid in step 3.`);
+});
+window.addEventListener("resize", debounce(schedulePreview, 200));
+
+/* ---------- boot ---------- */
+(async function boot(){
+  syncControls(); refreshSteps();
+  if (window.__libsReady) { try { await window.__libsReady; } catch (e) { console.error("Built-in PDF tools failed to start", e); } }
+  if (!window.pdfjsLib || !window.PDFLib) { $("summary").textContent = window.__libsReady ? "The built-in PDF tools couldn't start in this browser. Try a current version of Chrome, Edge, Firefox or Safari." : "The PDF tools didn't load. Check your connection and reload the page."; $("pdf-drop").style.pointerEvents = "none"; }
+})();
+</script>

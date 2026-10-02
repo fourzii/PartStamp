@@ -1,0 +1,16 @@
+const fs=require('fs'); const sj=process.argv[2];
+const src=fs.readFileSync('app.js','utf8'); const D=JSON.parse(fs.readFileSync(sj,'utf8'));
+eval(src.slice(src.indexOf('const ALIASES'), src.indexOf('function parseRanges')));
+var S={numPages:D.N,fullText:[],nextId:1,fps:null,rep:D.rep}; var isFileStart=()=>false;
+eval(src.slice(src.indexOf('function samePage'), src.indexOf('function scanStatus')));
+const clean=t=>String(t||"").split(/\n+/).map(t=>t.replace(/(\s)[|Il](?=\s*$|\s)/g,"$11").replace(/[|_~{}\[\]<>]/g," ").replace(/\s+/g," ").trim()).filter(t=>/[a-z]{3}/i.test(t)&&t.length<=60);
+const lbp=new Array(D.N).fill(null).map(()=>[]); for(const [k,t] of Object.entries(D.ocr||{})) lbp[+k]=clean(t);
+const lines=D.rep.map(r=>lbp[r]);
+const scoreLike=lines.map((ls,i)=>D.sc[i]||looksLikeScore(ls.flatMap(t=>phrasesIn(t)),3));
+const labels=markFrontMatter(textLabels(lines),scoreLike);
+const sk=Object.keys(S.skip).map(Number).sort((a,b)=>a-b);
+console.log('skipped pages:', sk.length? `${sk[0]+1}-${sk[sk.length-1]+1} (${sk.length})`:'none');
+const parts=partsFromLabels(labels);
+for(const p of parts) console.log('  '+p.label.padEnd(30), p.pages.map(x=>x+1).join(','));
+console.log(parts.length,'parts');
+if(process.argv[3]) for(const i of process.argv[3].split(',').map(Number)) console.log('ocr p'+i+':', JSON.stringify(lbp[D.rep[i-1]]));

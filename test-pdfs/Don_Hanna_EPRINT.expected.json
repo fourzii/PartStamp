@@ -1,0 +1,482 @@
+{
+ "pdf": "Don_Hanna_EPRINT.pdf",
+ "pages": 160,
+ "note": "Image-only ePrint. 'Clarinet 1' is printed 'B♭ Clarinet 1' on the page; correct the name here if your detection reads it fully.",
+ "skippedPages": [
+  {
+   "page": 1,
+   "reason": "Front matter"
+  },
+  {
+   "page": 2,
+   "reason": "Front matter"
+  },
+  {
+   "page": 3,
+   "reason": "Front matter"
+  },
+  {
+   "page": 4,
+   "reason": "Score"
+  },
+  {
+   "page": 5,
+   "reason": "Score"
+  },
+  {
+   "page": 6,
+   "reason": "Score"
+  },
+  {
+   "page": 7,
+   "reason": "Score"
+  },
+  {
+   "page": 8,
+   "reason": "Score"
+  },
+  {
+   "page": 9,
+   "reason": "Score"
+  },
+  {
+   "page": 10,
+   "reason": "Score"
+  },
+  {
+   "page": 11,
+   "reason": "Score"
+  },
+  {
+   "page": 12,
+   "reason": "Score"
+  },
+  {
+   "page": 13,
+   "reason": "Score"
+  },
+  {
+   "page": 14,
+   "reason": "Score"
+  },
+  {
+   "page": 15,
+   "reason": "Score"
+  },
+  {
+   "page": 16,
+   "reason": "Score"
+  },
+  {
+   "page": 17,
+   "reason": "Score"
+  },
+  {
+   "page": 18,
+   "reason": "Score"
+  },
+  {
+   "page": 19,
+   "reason": "Score"
+  },
+  {
+   "page": 20,
+   "reason": "Score"
+  },
+  {
+   "page": 21,
+   "reason": "Score"
+  },
+  {
+   "page": 22,
+   "reason": "Score"
+  },
+  {
+   "page": 23,
+   "reason": "Score"
+  },
+  {
+   "page": 24,
+   "reason": "Score"
+  },
+  {
+   "page": 25,
+   "reason": "Score"
+  },
+  {
+   "page": 26,
+   "reason": "Score"
+  },
+  {
+   "page": 27,
+   "reason": "Score"
+  },
+  {
+   "page": 28,
+   "reason": "Score"
+  }
+ ],
+ "parts": [
+  {
+   "name": "Flute 1",
+   "pages": [
+    29,
+    30
+   ]
+  },
+  {
+   "name": "Flute 2",
+   "pages": [
+    37,
+    38
+   ]
+  },
+  {
+   "name": "Oboe",
+   "pages": [
+    45,
+    46
+   ]
+  },
+  {
+   "name": "Bassoon",
+   "pages": [
+    49,
+    50
+   ]
+  },
+  {
+   "name": "Clarinet 1",
+   "pages": [
+    53,
+    54
+   ]
+  },
+  {
+   "name": "B♭ Clarinet 2",
+   "pages": [
+    61,
+    62
+   ]
+  },
+  {
+   "name": "B♭ Clarinet 3",
+   "pages": [
+    69,
+    70
+   ]
+  },
+  {
+   "name": "Bass Clarinet",
+   "pages": [
+    77,
+    78
+   ]
+  },
+  {
+   "name": "E♭ Alto Saxophone 1",
+   "pages": [
+    81,
+    82
+   ]
+  },
+  {
+   "name": "E♭ Alto Saxophone 2",
+   "pages": [
+    85,
+    86
+   ]
+  },
+  {
+   "name": "B♭ Tenor Saxophone",
+   "pages": [
+    89,
+    90
+   ]
+  },
+  {
+   "name": "E♭ Baritone Saxophone",
+   "pages": [
+    93,
+    94
+   ]
+  },
+  {
+   "name": "B♭ Trumpet 1",
+   "pages": [
+    95,
+    96
+   ]
+  },
+  {
+   "name": "B♭ Trumpet 2",
+   "pages": [
+    103,
+    104
+   ]
+  },
+  {
+   "name": "F Horn 1",
+   "pages": [
+    111,
+    112
+   ]
+  },
+  {
+   "name": "F Horn 2",
+   "pages": [
+    115,
+    116
+   ]
+  },
+  {
+   "name": "Trombone 1",
+   "pages": [
+    119,
+    120
+   ]
+  },
+  {
+   "name": "Trombone 2",
+   "pages": [
+    125,
+    126
+   ]
+  },
+  {
+   "name": "Euphonium in B.C.",
+   "pages": [
+    131,
+    132
+   ]
+  },
+  {
+   "name": "Euphonium in T.C.",
+   "pages": [
+    135,
+    136
+   ]
+  },
+  {
+   "name": "Tuba",
+   "pages": [
+    139,
+    140
+   ]
+  },
+  {
+   "name": "String Bass",
+   "pages": [
+    147,
+    148
+   ]
+  },
+  {
+   "name": "Percussion 1 (Snare Drum)",
+   "pages": [
+    149
+   ]
+  },
+  {
+   "name": "Percussion 2 (Bass Drum Tenor Drum)",
+   "pages": [
+    151,
+    152
+   ]
+  },
+  {
+   "name": "Percussion 3 (Cymbal, Triangle, Tambourine)",
+   "pages": [
+    155
+   ]
+  },
+  {
+   "name": "Percussion 4 (Suspended Cymbal, Castanets)",
+   "pages": [
+    157
+   ]
+  },
+  {
+   "name": "Mallet Percussion",
+   "pages": [
+    159
+   ]
+  }
+ ],
+ "duplicateCopies": {
+  "29": [
+   31,
+   33,
+   35
+  ],
+  "30": [
+   32,
+   34,
+   36
+  ],
+  "37": [
+   39,
+   41,
+   43
+  ],
+  "38": [
+   40,
+   42,
+   44
+  ],
+  "45": [
+   47
+  ],
+  "46": [
+   48
+  ],
+  "49": [
+   51
+  ],
+  "50": [
+   52
+  ],
+  "53": [
+   55,
+   57,
+   59
+  ],
+  "54": [
+   56,
+   58,
+   60
+  ],
+  "61": [
+   63,
+   65,
+   67
+  ],
+  "62": [
+   64,
+   66,
+   68
+  ],
+  "69": [
+   71,
+   73,
+   75
+  ],
+  "70": [
+   72,
+   74,
+   76
+  ],
+  "77": [
+   79
+  ],
+  "78": [
+   80
+  ],
+  "81": [
+   83
+  ],
+  "82": [
+   84
+  ],
+  "85": [
+   87
+  ],
+  "86": [
+   88
+  ],
+  "89": [
+   91
+  ],
+  "90": [
+   92
+  ],
+  "95": [
+   97,
+   99,
+   101
+  ],
+  "96": [
+   98,
+   100,
+   102
+  ],
+  "103": [
+   105,
+   107,
+   109
+  ],
+  "104": [
+   106,
+   108,
+   110
+  ],
+  "111": [
+   113
+  ],
+  "112": [
+   114
+  ],
+  "115": [
+   117
+  ],
+  "116": [
+   118
+  ],
+  "119": [
+   121,
+   123
+  ],
+  "120": [
+   122,
+   124
+  ],
+  "125": [
+   127,
+   129
+  ],
+  "126": [
+   128,
+   130
+  ],
+  "131": [
+   133
+  ],
+  "132": [
+   134
+  ],
+  "135": [
+   137
+  ],
+  "136": [
+   138
+  ],
+  "139": [
+   141,
+   143,
+   145
+  ],
+  "140": [
+   142,
+   144,
+   146
+  ],
+  "149": [
+   150
+  ],
+  "151": [
+   153
+  ],
+  "152": [
+   154
+  ],
+  "155": [
+   156
+  ],
+  "157": [
+   158
+  ],
+  "159": [
+   160
+  ]
+ }
+}

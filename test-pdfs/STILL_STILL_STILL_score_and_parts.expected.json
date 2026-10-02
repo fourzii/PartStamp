@@ -1,0 +1,282 @@
+{
+ "pdf": "STILL_STILL_STILL_score_and_parts.pdf",
+ "pages": 86,
+ "note": "Image-only ePrint, every part one page. The Percussion part's printed list is: Sus Cym, Wind Chimes, Sleigh Bells, Triangle, Crash Cymbal.",
+ "skippedPages": [
+  {
+   "page": 1,
+   "reason": "Front matter"
+  },
+  {
+   "page": 2,
+   "reason": "Score"
+  },
+  {
+   "page": 3,
+   "reason": "Front matter"
+  },
+  {
+   "page": 4,
+   "reason": "Front matter"
+  },
+  {
+   "page": 5,
+   "reason": "Score"
+  },
+  {
+   "page": 6,
+   "reason": "Score"
+  },
+  {
+   "page": 7,
+   "reason": "Score"
+  },
+  {
+   "page": 8,
+   "reason": "Score"
+  },
+  {
+   "page": 9,
+   "reason": "Score"
+  },
+  {
+   "page": 10,
+   "reason": "Score"
+  },
+  {
+   "page": 11,
+   "reason": "Score"
+  }
+ ],
+ "parts": [
+  {
+   "name": "Flute",
+   "pages": [
+    12
+   ]
+  },
+  {
+   "name": "Oboe",
+   "pages": [
+    20
+   ]
+  },
+  {
+   "name": "B♭ Clarinet 1",
+   "pages": [
+    22
+   ]
+  },
+  {
+   "name": "B♭ Clarinet 2",
+   "pages": [
+    28
+   ]
+  },
+  {
+   "name": "B♭ Bass Clarinet",
+   "pages": [
+    34
+   ]
+  },
+  {
+   "name": "E♭ Alto Saxophone 1",
+   "pages": [
+    36
+   ]
+  },
+  {
+   "name": "E♭ Alto Saxophone 2",
+   "pages": [
+    38
+   ]
+  },
+  {
+   "name": "B♭ Tenor Saxophone",
+   "pages": [
+    40
+   ]
+  },
+  {
+   "name": "E♭ Baritone Saxophone",
+   "pages": [
+    42
+   ]
+  },
+  {
+   "name": "B♭ Trumpet 1",
+   "pages": [
+    43
+   ]
+  },
+  {
+   "name": "B♭ Trumpet 2",
+   "pages": [
+    48
+   ]
+  },
+  {
+   "name": "Horn",
+   "pages": [
+    53
+   ]
+  },
+  {
+   "name": "Trombone 1",
+   "pages": [
+    57
+   ]
+  },
+  {
+   "name": "Trombone 2",
+   "pages": [
+    61
+   ]
+  },
+  {
+   "name": "Euphonium",
+   "pages": [
+    65
+   ]
+  },
+  {
+   "name": "Euphonium TC",
+   "pages": [
+    69
+   ]
+  },
+  {
+   "name": "Tuba",
+   "pages": [
+    71
+   ]
+  },
+  {
+   "name": "Bells",
+   "pages": [
+    75
+   ]
+  },
+  {
+   "name": "Vibraphone",
+   "pages": [
+    77
+   ]
+  },
+  {
+   "name": "Chimes",
+   "pages": [
+    79
+   ]
+  },
+  {
+   "name": "Timpani, Triangle",
+   "pages": [
+    81
+   ]
+  },
+  {
+   "name": "Percussion (Suspended Cymbal, Chimes, Triangle, Crash Cymbal)",
+   "pages": [
+    83
+   ]
+  }
+ ],
+ "duplicateCopies": {
+  "12": [
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19
+  ],
+  "20": [
+   21
+  ],
+  "22": [
+   23,
+   24,
+   25,
+   26,
+   27
+  ],
+  "28": [
+   29,
+   30,
+   31,
+   32,
+   33
+  ],
+  "34": [
+   35
+  ],
+  "36": [
+   37
+  ],
+  "38": [
+   39
+  ],
+  "40": [
+   41
+  ],
+  "43": [
+   44,
+   45,
+   46,
+   47
+  ],
+  "48": [
+   49,
+   50,
+   51,
+   52
+  ],
+  "53": [
+   54,
+   55,
+   56
+  ],
+  "57": [
+   58,
+   59,
+   60
+  ],
+  "61": [
+   62,
+   63,
+   64
+  ],
+  "65": [
+   66,
+   67,
+   68
+  ],
+  "69": [
+   70
+  ],
+  "71": [
+   72,
+   73,
+   74
+  ],
+  "75": [
+   76
+  ],
+  "77": [
+   78
+  ],
+  "79": [
+   80
+  ],
+  "81": [
+   82
+  ],
+  "83": [
+   84,
+   85,
+   86
+  ]
+ }
+}
